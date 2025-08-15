@@ -1,0 +1,449 @@
+{
+  "project": {
+    "name": "AI-Powered Eye Health Monitoring System",
+    "description": "Complete telemedicine platform for eye health screening using smartphone cameras and AI analysis",
+    "type": "healthcare_telemedicine",
+    "target": "hackathon_submission"
+  },
+  "system_architecture": {
+    "frontend": {
+      "framework": "React",
+      "styling": "TailwindCSS",
+      "animations": "Framer Motion",
+      "components": [
+        "patient_dashboard",
+        "doctor_portal",
+        "camera_interface",
+        "ai_analysis_viewer",
+        "appointment_system",
+        "medication_tracker"
+      ]
+    },
+    "backend": {
+      "framework": "Node.js/Express",
+      "database": "MongoDB/PostgreSQL",
+      "ai_models": "TensorFlow/PyTorch",
+      "authentication": "JWT + Biometric",
+      "storage": "AWS S3/CloudFlare R2"
+    },
+    "ai_pipeline": {
+      "image_processing": "OpenCV",
+      "models": [
+        "external_eye_condition_detector",
+        "color_analysis_model",
+        "structural_analysis_model",
+        "risk_assessment_model"
+      ],
+      "preprocessing": "noise_reduction_enhancement_standardization"
+    }
+  },
+  "user_flows": {
+    "patient_onboarding": {
+      "steps": [
+        {
+          "id": 1,
+          "name": "account_creation",
+          "inputs": ["full_name", "dob", "gender", "phone", "email", "emergency_contact"],
+          "process": "generate_unique_patient_id",
+          "output": "incomplete_profile_status"
+        },
+        {
+          "id": 2,
+          "name": "medical_history_collection",
+          "inputs": ["diabetes", "blood_pressure", "family_history", "medications", "allergies", "previous_surgeries"],
+          "process": "dynamic_questionnaire_with_followups",
+          "output": "risk_score_calculation"
+        },
+        {
+          "id": 3,
+          "name": "biometric_registration",
+          "options": ["upload_existing_image", "visit_medical_store"],
+          "process": "ai_biometric_template_creation",
+          "validation": ["format_check", "resolution_min_1024x1024", "quality_score_ai"]
+        }
+      ]
+    },
+    "authentication_system": {
+      "primary_methods": [
+        {
+          "type": "eye_scan_biometric",
+          "process": [
+            "camera_activation",
+            "real_time_guidance",
+            "iris_pattern_extraction",
+            "template_matching",
+            "liveness_detection"
+          ],
+          "thresholds": {
+            "high_confidence": ">95%",
+            "medium_confidence": "85-95%",
+            "low_confidence": "<85%"
+          }
+        },
+        {
+          "type": "phone_otp",
+          "process": ["phone_input", "otp_generation", "sms_delivery", "verification"],
+          "timeout": "3_minutes"
+        }
+      ],
+      "security_features": [
+        "device_fingerprinting",
+        "location_verification",
+        "failed_attempt_lockout",
+        "session_management"
+      ]
+    },
+    "eye_test_capture": {
+      "preparation": [
+        "lighting_check",
+        "camera_lens_cleaning",
+        "remove_glasses_contacts",
+        "stability_setup"
+      ],
+      "camera_interface": {
+        "real_time_feedback": [
+          "eye_detection",
+          "distance_measurement",
+          "focus_assessment",
+          "lighting_evaluation",
+          "stability_monitoring"
+        ],
+        "auto_capture_conditions": [
+          "eye_positioned_properly",
+          "focus_sharpness_above_0.8",
+          "lighting_adequacy_above_0.7",
+          "device_stable_2_seconds",
+          "eye_fully_open"
+        ],
+        "capture_sequence": [
+          "hold_still_message",
+          "3_second_countdown",
+          "multiple_rapid_captures",
+          "best_image_selection",
+          "quality_confirmation"
+        ]
+      },
+      "quality_assessment": {
+        "excellent": ">80_score",
+        "good": "60-80_score",
+        "retry_needed": "<60_score"
+      }
+    },
+    "ai_analysis_pipeline": {
+      "preprocessing": [
+        "image_validation",
+        "quality_enhancement",
+        "standardization",
+        "roi_detection"
+      ],
+      "multi_model_analysis": [
+        {
+          "model": "external_eye_conditions",
+          "detects": ["conjunctivitis", "stye", "ptosis", "swelling"],
+          "output": "condition_probabilities_confidence"
+        },
+        {
+          "model": "color_analysis",
+          "analyzes": ["conjunctiva_sclera_regions"],
+          "detects": ["anemia_signs", "jaundice_indicators"],
+          "output": "health_indicators_severity"
+        },
+        {
+          "model": "structural_analysis",
+          "examines": ["symmetry", "alignment", "shape"],
+          "detects": ["strabismus", "ptosis", "structural_abnormalities"],
+          "output": "structural_health_assessment"
+        },
+        {
+          "model": "risk_assessment",
+          "inputs": ["all_model_outputs", "patient_history"],
+          "calculates": "overall_risk_score",
+          "generates": "priority_level_recommendations"
+        }
+      ],
+      "result_processing": [
+        "result_compilation",
+        "confidence_weighting",
+        "cross_validation",
+        "preliminary_diagnosis"
+      ]
+    },
+    "triage_priority_system": {
+      "risk_calculation": {
+        "base_score": "ai_confidence_x_severity_weight",
+        "modifying_factors": {
+          "age_factor": "+5_to_15_points",
+          "diabetes": "+10_to_20_points",
+          "high_bp": "+5_to_10_points",
+          "family_history": "+5_to_10_points",
+          "symptom_duration": "+5_to_20_points",
+          "previous_abnormal": "+10_to_25_points"
+        }
+      },
+      "priority_levels": {
+        "critical": {
+          "score_range": "90-100",
+          "action": "immediate_attention_required",
+          "notifications": ["urgent_sms", "email_report", "doctor_alert", "emergency_contact"]
+        },
+        "urgent": {
+          "score_range": "75-89",
+          "action": "see_doctor_24_48_hours",
+          "notifications": ["priority_notification", "appointment_highlights"]
+        },
+        "moderate": {
+          "score_range": "50-74",
+          "action": "schedule_1_2_weeks",
+          "notifications": ["standard_notification", "educational_materials"]
+        },
+        "routine": {
+          "score_range": "25-49",
+          "action": "regular_followup_sufficient",
+          "notifications": ["routine_reminder"]
+        },
+        "normal": {
+          "score_range": "0-24",
+          "action": "continue_routine_screening",
+          "notifications": ["positive_reinforcement", "health_tips"]
+        }
+      }
+    }
+  },
+  "features": {
+    "patient_dashboard": {
+      "components": [
+        "welcome_personalized_greeting",
+        "health_status_overview",
+        "quick_actions_panel",
+        "recent_activity_feed",
+        "emergency_banner_conditional"
+      ],
+      "quick_actions": [
+        "take_new_eye_test",
+        "view_latest_results",
+        "book_appointment",
+        "medication_reminder"
+      ],
+      "navigation_menu": [
+        "dashboard_home",
+        "my_tests",
+        "medical_history",
+        "appointments",
+        "medications",
+        "settings",
+        "help_support"
+      ]
+    },
+    "doctor_portal": {
+      "authentication": [
+        "medical_license_verification",
+        "two_factor_authentication",
+        "ip_address_monitoring"
+      ],
+      "dashboard_components": [
+        "patient_queue_priority_sorted",
+        "todays_appointments",
+        "pending_reviews",
+        "analytics_overview",
+        "quick_actions_panel"
+      ],
+      "patient_review": [
+        "complete_patient_profile",
+        "ai_analysis_review",
+        "treatment_actions",
+        "prescription_management",
+        "specialist_referral"
+      ]
+    },
+    "appointment_system": {
+      "patient_booking": [
+        "priority_based_scheduling",
+        "doctor_selection",
+        "time_slot_selection",
+        "payment_processing",
+        "confirmation_system"
+      ],
+      "automatic_scheduling": [
+        "emergency_slot_blocking",
+        "location_based_matching",
+        "escalation_system",
+        "smart_scheduling_ai"
+      ]
+    },
+    "medication_management": {
+      "prescription_integration": [
+        "electronic_prescription_generation",
+        "pharmacy_integration",
+        "patient_notifications",
+        "insurance_coverage_check"
+      ],
+      "adherence_tracking": [
+        "smart_reminder_system",
+        "compliance_monitoring",
+        "refill_management",
+        "cost_optimization"
+      ]
+    },
+    "progress_tracking": {
+      "monitoring_system": [
+        "baseline_establishment",
+        "progress_measurement",
+        "visual_progress_reports",
+        "milestone_tracking"
+      ],
+      "predictive_analytics": [
+        "disease_progression_forecasting",
+        "treatment_response_prediction",
+        "complication_risk_assessment",
+        "population_health_insights"
+      ]
+    }
+  },
+  "technical_specifications": {
+    "security": {
+      "data_encryption": [
+        "end_to_end_communication",
+        "database_encryption_at_rest",
+        "image_file_encryption",
+        "key_rotation_policies"
+      ],
+      "access_control": [
+        "role_based_permissions",
+        "multi_factor_authentication",
+        "session_management",
+        "ip_whitelisting"
+      ],
+      "compliance": [
+        "hipaa_compliance_automated_checks",
+        "gdpr_data_handling",
+        "audit_logs_all_access",
+        "incident_response_procedures"
+      ]
+    },
+    "data_synchronization": {
+      "real_time_sync": [
+        "cloud_database_updates",
+        "multi_device_synchronization",
+        "offline_capabilities",
+        "conflict_resolution"
+      ],
+      "external_integrations": [
+        "ehr_systems",
+        "laboratory_systems",
+        "pharmacy_networks",
+        "insurance_databases",
+        "telemedicine_platforms"
+      ]
+    },
+    "ai_models": {
+      "image_preprocessing": [
+        "noise_reduction",
+        "brightness_contrast_optimization",
+        "sharpening_enhancement",
+        "color_balance_correction",
+        "standardization_normalization"
+      ],
+      "detection_models": [
+        "eye_boundary_detection",
+        "iris_pupil_segmentation",
+        "sclera_identification",
+        "eyelid_margin_detection"
+      ],
+      "analysis_algorithms": [
+        "condition_probability_calculation",
+        "color_value_analysis",
+        "structural_assessment",
+        "risk_stratification"
+      ]
+    }
+  },
+  "ui_ux_specifications": {
+    "design_principles": [
+      "accessibility_first",
+      "mobile_responsive",
+      "intuitive_navigation",
+      "clear_visual_hierarchy",
+      "consistent_color_coding"
+    ],
+    "animation_requirements": [
+      "smooth_transitions",
+      "loading_indicators",
+      "progress_animations",
+      "hover_effects",
+      "micro_interactions"
+    ],
+    "color_coding_system": {
+      "critical": "#EF4444",
+      "urgent": "#F59E0B",
+      "moderate": "#F97316",
+      "routine": "#10B981",
+      "normal": "#059669"
+    }
+  },
+  "api_endpoints": {
+    "authentication": [
+      "POST /api/auth/register",
+      "POST /api/auth/login",
+      "POST /api/auth/biometric-verify",
+      "POST /api/auth/otp-send",
+      "POST /api/auth/otp-verify"
+    ],
+    "patient_management": [
+      "GET /api/patient/profile",
+      "PUT /api/patient/profile",
+      "POST /api/patient/medical-history",
+      "GET /api/patient/dashboard"
+    ],
+    "eye_test": [
+      "POST /api/test/capture",
+      "POST /api/test/upload",
+      "GET /api/test/results/:id",
+      "GET /api/test/history"
+    ],
+    "ai_analysis": [
+      "POST /api/ai/analyze",
+      "GET /api/ai/results/:id",
+      "POST /api/ai/feedback"
+    ],
+    "appointments": [
+      "GET /api/appointments/available",
+      "POST /api/appointments/book",
+      "PUT /api/appointments/:id",
+      "DELETE /api/appointments/:id"
+    ],
+    "doctor_portal": [
+      "GET /api/doctor/queue",
+      "GET /api/doctor/patient/:id",
+      "POST /api/doctor/diagnosis",
+      "POST /api/doctor/prescription"
+    ]
+  },
+  "database_schema": {
+    "users": [
+      "id", "email", "phone", "role", "created_at", "updated_at"
+    ],
+    "patients": [
+      "user_id", "full_name", "dob", "gender", "emergency_contact", "biometric_template", "medical_history"
+    ],
+    "doctors": [
+      "user_id", "license_number", "specialization", "hospital_affiliation", "verified"
+    ],
+    "eye_tests": [
+      "id", "patient_id", "image_url", "ai_results", "risk_score", "priority_level", "created_at"
+    ],
+    "appointments": [
+      "id", "patient_id", "doctor_id", "datetime", "type", "status", "notes"
+    ],
+    "prescriptions": [
+      "id", "patient_id", "doctor_id", "medications", "instructions", "issued_date"
+    ]
+  },
+  "deployment": {
+    "frontend": "Vercel/Netlify",
+    "backend": "Railway/Render",
+    "database": "MongoDB Atlas/Supabase",
+    "file_storage": "Cloudflare R2/AWS S3",
+    "ai_models": "Hugging Face/Replicate",
+    "monitoring": "Sentry/LogRocket"
+  }
+}
