@@ -10,7 +10,7 @@ const LoadingSpinner = ({ size = 'md', text = 'Loading...' }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800">
+  <div className="flex flex-col items-center justify-center min-h-screen bg-[linear-gradient(180deg,#ffd3ea_0%,#e54be0_45%,#6b1f80_100%)]">
       <motion.div
         className={`${sizeClasses[size]} border-4 border-white/20 border-t-white rounded-full`}
         animate={{ rotate: 360 }}

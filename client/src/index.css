@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -9,35 +10,63 @@
   }
   
   body {
-    font-family: 'Inter', system-ui, sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: 'Inter', system-ui, sans-serif;
+  /* new pink -> purple subtle background to match the uploaded design */
+  background: linear-gradient(180deg, #f8e9f5 0%, #f0d7f0 20%, #e9c8ef 40%, #f0c2f7 60%, #f2bdf8 80%);
     min-height: 100vh;
   }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-white/10 backdrop-blur-md border border-white/20 rounded-xl shadow-glass;
+    @apply bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl shadow-glass;
   }
   
   .glass-button {
-    @apply bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg px-6 py-3 text-white font-medium transition-all duration-300 hover:bg-white/30 hover:scale-105 active:scale-95;
+  /* pink -> purple gradient CTA */
+  @apply bg-gradient-to-r from-brand-500 to-accent-500 text-white rounded-lg px-6 py-3 font-semibold transition-transform duration-200 shadow-lg hover:scale-105 active:scale-95 relative overflow-hidden;
   }
+
+.glass-button::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02), rgba(255,255,255,0.06));
+  transform: translateX(-120%);
+  transition: transform 0.8s ease;
+  pointer-events: none;
+}
+.glass-button:hover::after {
+  transform: translateX(120%);
+}
+.glass-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 6px rgba(229,75,224,0.10);
+}
+
+@keyframes floaty {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+  100% { transform: translateY(0); }
+}
+.glass-button--float {
+  animation: floaty 4s ease-in-out infinite;
+}
   
   .health-card {
     @apply bg-white rounded-xl shadow-health p-6 transition-all duration-300 hover:shadow-lg hover:scale-105;
   }
   
   .gradient-text {
-    @apply bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent;
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-400 to-accent-400;
   }
   
   .pulse-ring {
-    @apply absolute inset-0 rounded-full border-2 border-primary-400 animate-pulse-slow;
+  @apply absolute inset-0 rounded-full border-2 border-brand-400 animate-pulse-slow;
   }
   
   .camera-frame {
-    @apply relative w-full max-w-md mx-auto rounded-2xl overflow-hidden bg-black/20 backdrop-blur-sm border-2 border-white/30;
+  @apply relative w-full max-w-md mx-auto rounded-2xl overflow-hidden bg-black/20 backdrop-blur-sm border-2 border-white/30;
     aspect-ratio: 1 / 1;
   }
   

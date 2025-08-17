@@ -7,16 +7,16 @@ import { SocketProvider } from "./contexts/SocketContext";
 // Animation components using Framer Motion
 
 // Pages
-import LandingPage from "./pages/LandingPage";
-import PatientDashboard from "./pages/PatientDashboard";
-import DoctorPortal from "./pages/DoctorPortal";
-import EyeTestCamera from "./pages/EyeTestCamera";
-import ResultsViewer from "./pages/ResultsViewer";
-import AppointmentBooking from "./pages/AppointmentBooking";
-import PatientOnboarding from "./pages/PatientOnboarding";
-import LoginPage from "./pages/LoginPage";
-import AboutUs from "./pages/AboutUs";
-import ContactUs from "./pages/ContactUs";
+import LandingPage from "./components/pages/LandingPage";
+import PatientDashboard from "./components/pages/PatientDashboard";
+import DoctorPortal from "./components/pages/DoctorPortal";
+import EyeTestCamera from "./components/pages/EyeTestCamera";
+import ResultsViewer from "./components/pages/ResultsViewer";
+import AppointmentBooking from "./components/pages/AppointmentBooking";
+import PatientOnboarding from "./components/pages/PatientOnboarding";
+import LoginPage from "./components/pages/LoginPage";
+import AboutUs from "./components/pages/AboutUs";
+import ContactUs from "./components/pages/ContactUs";
 
 // Components
 import ProtectedRoute from "./components/auth/ProtectedRoute";
@@ -36,7 +36,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <SocketProvider>
-          <div className="App min-h-screen bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-800">
+          <div className="App min-h-screen bg-[linear-gradient(180deg,#ffd3ea_0%,#e54be0_45%,#6b1f80_100%)]">
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<LandingPage />} />
@@ -46,32 +46,16 @@ function App() {
               <Route path="/contact" element={<ContactUs />} />
 
               {/* Protected Patient Routes */}
-              <Route
-                path="/patient/dashboard"
-                element={
-                  <ProtectedRoute role="patient">
-                    <PatientDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/patient/eye-test"
-                element={
-                  <ProtectedRoute role="patient">
-                    <EyeTestCamera />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/patient/results/:testId"
-                element={
+              <Route path="/patient/dashboard" element={ <ProtectedRoute role="patient"> <PatientDashboard /></ProtectedRoute>}/>
+
+             <Route path="/patient/eye-test" element={<ProtectedRoute role="patient"><EyeTestCamera /></ProtectedRoute>}/>
+              <Route path="/patient/results/:testId" element={
                   <ProtectedRoute role="patient">
                     <ResultsViewer />
                   </ProtectedRoute>
                 }
               />
-              <Route
-                path="/patient/appointments"
+              <Route path="/patient/appointments"
                 element={
                   <ProtectedRoute role="patient">
                     <AppointmentBooking />

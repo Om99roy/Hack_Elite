@@ -6,17 +6,26 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
+        // new pink-purple brand palette (replaces old teal/blue tokens)
+        brand: {
+          50: '#fff6fb',
+          100: '#fde8f7',
+          200: '#f9d0ef',
+          300: '#f7a8f0',
+          400: '#f47be8',
+          500: '#e54be0',
+          600: '#c13ccf',
+          700: '#8f2aa6',
+          800: '#6b1f80',
+          900: '#4b1758',
+        },
+        accent: {
+          50: '#fff3ff',
+          100: '#fde6ff',
+          200: '#f7ccff',
+          300: '#e9a8ff',
+          400: '#d07bff',
+          500: '#b85bff'
         },
         health: {
           critical: '#EF4444',
@@ -77,13 +86,14 @@ module.exports = {
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'health-gradient': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        'glass-gradient': 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)',
+        // pink -> purple brand gradient used across hero and banners
+        'health-gradient': 'linear-gradient(135deg, #ffd3ea 0%, #e54be0 45%, #6b1f80 100%)',
+        'glass-gradient': 'linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.03) 100%)',
       },
       boxShadow: {
-        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+        'glass': '0 8px 32px 0 rgba(107, 31, 128, 0.12)',
         'glass-light': '0 4px 16px 0 rgba(255, 255, 255, 0.1)',
-        'health': '0 10px 25px -3px rgba(59, 130, 246, 0.1), 0 4px 6px -2px rgba(59, 130, 246, 0.05)',
+        'health': '0 10px 25px -3px rgba(213, 93, 214, 0.12), 0 4px 6px -2px rgba(184, 91, 255, 0.06)',
       },
     },
   },
