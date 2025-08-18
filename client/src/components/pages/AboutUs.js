@@ -152,7 +152,7 @@ const AboutUs = () => {
           
           <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
-              About EyeHealth AI
+              About MediElite , Healthcare  AI
             </h1>
             <p className="text-xl text-brand-100 max-w-3xl mx-auto">
               Revolutionizing eye care through cutting-edge AI technology and compassionate healthcare delivery
@@ -239,7 +239,7 @@ const AboutUs = () => {
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Meet Our Team</h2>
             <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-              The brilliant minds behind EyeHealth AI, dedicated to transforming healthcare
+              The brilliant minds behind MediElite, dedicated to transforming healthcare
             </p>
           </motion.div>
           
@@ -318,7 +318,7 @@ const AboutUs = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
                 <p className="text-brand-100 text-lg leading-relaxed mb-6">
-                  EyeHealth AI was born from a simple observation: millions of people worldwide lack access 
+                  MediElite was born from a simple observation: millions of people worldwide lack access 
                   to quality eye care, leading to preventable vision loss and blindness. Our founders, 
                   Dr. Sarah Johnson and Michael Chen, recognized that AI technology could bridge this gap.
                 </p>

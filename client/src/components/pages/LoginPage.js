@@ -100,7 +100,7 @@ const LoginPage = () => {
             <div className="w-8 h-8 bg-gradient-to-r from-brand-500 to-accent-500 rounded-lg"></div>
           </motion.div>
           <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-          <p className="text-brand-200">Sign in to your EyeHealth AI account</p>
+          <p className="text-brand-200">Sign in to your MediElite account</p>
         </div>
 
         {/* Login Method Tabs */}

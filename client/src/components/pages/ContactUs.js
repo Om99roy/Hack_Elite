@@ -152,7 +152,7 @@ const ContactUs = () => {
               Contact Us
             </h1>
             <p className="text-xl text-brand-100 max-w-3xl mx-auto">
-              Get in touch with our team. We're here to help with any questions about EyeHealth AI.
+              Get in touch with our team. We're here to help with any questions about MediElite.
             </p>
           </div>
         </div>
@@ -422,7 +422,7 @@ const ContactUs = () => {
           <div className="glass-card p-12 text-center">
             <h2 className="text-3xl font-bold text-white mb-6">Ready to Get Started?</h2>
             <p className="text-xl text-blue-100 mb-8">
-              Join thousands of users who trust EyeHealth AI for their eye care needs
+              Join thousands of users who trust MediElite for their eye care needs
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 

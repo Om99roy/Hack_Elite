@@ -154,7 +154,7 @@ const PatientOnboarding = () => {
           className="text-center mb-8"
         >
           <h1 className="text-4xl font-bold text-white mb-2">Create Your Account</h1>
-          <p className="text-brand-200">Join EyeHealth AI for personalized eye care</p>
+          <p className="text-brand-200">Join MediElite for personalized eye care</p>
         </motion.div>
 
         {/* Progress Steps */}

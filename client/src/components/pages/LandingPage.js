@@ -41,7 +41,9 @@ const LandingPage = () => {
           {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
             <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-              <TbHealthRecognition  className="w-6 h-6 text-brand-500" />
+              {/* <TbHealthRecognition  className="w-6 h-6 text-brand-500" /> */}
+              <img src="/images/heartbeat.gif" alt="Health GIF" className="w-6 h-6" />
+
             </div>
             <span className="text-xl font-bold text-white">MediElite</span>
           </Link>
@@ -134,13 +136,12 @@ const LandingPage = () => {
             className="max-w-4xl text-center p-8 md:p-12 rounded-xl"
           >
             <h1 className="text-4xl md:text-6xl font-extrabold text-white drop-shadow-lg leading-tight">
-              <span className="block">AI-Powered Eye Health</span>
+              <span className="block">AI-Powered Health</span>
               <span className="block text-lg md:text-xl mt-2 text-white/90 font-medium">Monitoring & Remote Screening</span>
             </h1>
 
-            <p className="mt-6 text-base md:text-lg text-white/85 max-w-3xl mx-auto">
-              Transform your eye care with cutting-edge AI screening, secure biometric authentication, and instant, actionable reports — all from your smartphone.
-            </p>
+            <p className="mt-6 text-base md:text-lg text-white font-medium max-w-3xl mx-auto">
+AI-Powered Health Management System - Complete telemedicine platform for health screening            </p>
 
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link to="/onboarding" className="inline-flex items-center gap-2 bg-gradient-to-r from-sky-500 to-indigo-600 text-white px-6 py-3 rounded-lg text-lg font-semibold shadow-lg transform transition-all duration-200 hover:scale-105 hover:-translate-y-1">
@@ -176,7 +177,7 @@ const LandingPage = () => {
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Why Choose EyeHealth AI?
+              Why Choose MediElite?
             </h2>
             <p className="text-xl text-blue-100 max-w-2xl mx-auto">
               Advanced technology meets compassionate care for the future of eye health
@@ -278,7 +279,7 @@ const LandingPage = () => {
               Trusted by Healthcare Professionals
             </h2>
             <p className="text-xl text-blue-100">
-              See what doctors and patients are saying about EyeHealth AI
+              See what doctors and patients are saying about MediElite
             </p>
           </motion.div>
           
@@ -322,7 +323,7 @@ const LandingPage = () => {
               Ready to Protect Your Vision?
             </h2>
             <p className="text-xl text-blue-100 mb-8">
-              Join thousands of users who trust EyeHealth AI for their eye care needs
+              Join thousands of users who trust MediElite for their eye care needs
             </p>
             <Link 
               to="/onboarding"
@@ -340,7 +341,8 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-      <TbHealthRecognition  className="w-5 h-5 text-brand-600" />
+      {/* <TbHealthRecognition  className="w-5 h-5 text-brand-600" /> */}
+        <img src="/images/heartbeat.gif" alt="Health GIF" className="w-6 h-6" />
             </div>
             <span className="text-xl font-bold text-white">MediElite</span>
           </div>

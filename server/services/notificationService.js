@@ -37,7 +37,7 @@ const sendSMS = async (phoneNumber, message) => {
 
 // Send OTP via SMS
 const sendOTP = async (phoneNumber, otp) => {
-  const message = `Your EyeHealth AI verification code is: ${otp}. Valid for 3 minutes. Do not share this code with anyone.`;
+  const message = `Your MediElite verification code is: ${otp}. Valid for 3 minutes. Do not share this code with anyone.`;
   // If Twilio is not configured in local/dev, skip sending and log the OTP so local testing works
   if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN || !process.env.TWILIO_PHONE_NUMBER) {
     console.warn('Twilio not configured - skipping SMS send. OTP for', phoneNumber, 'is', otp);
@@ -77,7 +77,7 @@ const sendTestResultNotification = async (patient, testResult) => {
     const subject = `Eye Test Results - ${priorityLevel.toUpperCase()}`;
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2 style="color: #3b82f6;">EyeHealth AI - Test Results</h2>
+        <h2 style="color: #3b82f6;">MediElite - Test Results</h2>
         <p>Dear ${fullName},</p>
         <p>Your eye test results are ready.</p>
         <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
@@ -87,7 +87,7 @@ const sendTestResultNotification = async (patient, testResult) => {
           <p><strong>Risk Score:</strong> ${riskScore}/100</p>
         </div>
         <p>Please log in to your dashboard to view detailed results.</p>
-        <p>Best regards,<br>EyeHealth AI Team</p>
+        <p>Best regards,<br>MediElite Team</p>
       </div>
     `;
 
@@ -108,7 +108,7 @@ const sendAppointmentReminder = async (patient, appointment) => {
 
   // Email reminder
   if (email) {
-    const subject = 'Appointment Reminder - EyeHealth AI';
+    const subject = 'Appointment Reminder - MediElite';
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #3b82f6;">Appointment Reminder</h2>
@@ -120,7 +120,7 @@ const sendAppointmentReminder = async (patient, appointment) => {
           <p><strong>Doctor:</strong> ${doctor}</p>
         </div>
         <p>Please ensure you're available for your appointment.</p>
-        <p>Best regards,<br>EyeHealth AI Team</p>
+        <p>Best regards,<br>MediElite Team</p>
       </div>
     `;
 
@@ -159,14 +159,14 @@ const sendDoctorAssignmentNotification = async (patient, doctor) => {
 
   // Email notification
   if (email) {
-    const subject = 'Doctor Assigned - EyeHealth AI';
+    const subject = 'Doctor Assigned - MediElite';
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #3b82f6;">Doctor Assignment</h2>
         <p>Dear ${fullName},</p>
         <p>Dr. ${doctorName} has been assigned to review your case.</p>
         <p>You will be contacted shortly with further instructions.</p>
-        <p>Best regards,<br>EyeHealth AI Team</p>
+        <p>Best regards,<br>MediElite Team</p>
       </div>
     `;
 
@@ -187,7 +187,7 @@ const sendMedicationReminder = async (patient, medication) => {
 
   // Email reminder
   if (email) {
-    const subject = 'Medication Reminder - EyeHealth AI';
+    const subject = 'Medication Reminder - MediElite';
     const htmlContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #3b82f6;">Medication Reminder</h2>
@@ -199,7 +199,7 @@ const sendMedicationReminder = async (patient, medication) => {
           <p><strong>Frequency:</strong> ${frequency}</p>
         </div>
         <p>Please take your medication as prescribed.</p>
-        <p>Best regards,<br>EyeHealth AI Team</p>
+        <p>Best regards,<br>MediElite Team</p>
       </div>
     `;
 

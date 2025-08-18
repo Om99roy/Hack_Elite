@@ -189,7 +189,7 @@ const PatientDashboard = () => {
               <Eye className="w-6 h-6 text-brand-600" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-white">EyeHealth AI</h1>
+              <h1 className="text-xl font-bold text-white">MediElite</h1>
               <p className="text-brand-200 text-sm">Patient Portal</p>
             </div>
           </motion.div>

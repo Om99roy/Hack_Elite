@@ -59,11 +59,11 @@ router.post('/submit', async (req, res) => {
     // Send confirmation email to user
     await sendEmail({
       to: email,
-      subject: 'Thank you for contacting EyeHealth AI',
+      subject: 'Thank you for contacting MediElite',
       text: `
         Dear ${name},
         
-        Thank you for reaching out to EyeHealth AI. We have received your message and will get back to you within 24-48 hours.
+        Thank you for reaching out to MediElite. We have received your message and will get back to you within 24-48 hours.
         
         Your message details:
         Subject: ${subject}
@@ -72,17 +72,17 @@ router.post('/submit', async (req, res) => {
         If you have any urgent questions, please call us at +1 (555) 123-4567.
         
         Best regards,
-        The EyeHealth AI Team
+        The MediElite Team
       `,
       html: `
-        <h2>Thank you for contacting EyeHealth AI</h2>
+        <h2>Thank you for contacting MediElite</h2>
         <p>Dear ${name},</p>
-        <p>Thank you for reaching out to EyeHealth AI. We have received your message and will get back to you within 24-48 hours.</p>
+        <p>Thank you for reaching out to MediElite. We have received your message and will get back to you within 24-48 hours.</p>
         <p><strong>Your message details:</strong></p>
         <p><strong>Subject:</strong> ${subject}</p>
         <p><strong>Message:</strong> ${message}</p>
         <p>If you have any urgent questions, please call us at <strong>+1 (555) 123-4567</strong>.</p>
-        <p>Best regards,<br>The EyeHealth AI Team</p>
+        <p>Best regards,<br>The MediElite Team</p>
       `
     });
 
