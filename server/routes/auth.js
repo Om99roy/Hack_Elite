@@ -15,6 +15,9 @@ const registerSchema = Joi.object({
   phone: Joi.string()
     .pattern(/^\+?[\d\s-]+$/)
     .required(),
+  // accept both spellings just in case frontend uses 'speciality'
+  specialty: Joi.string().optional(),
+  speciality: Joi.string().optional(),
   password: Joi.string().min(6).required(),
   fullName: Joi.string().min(2).required(),
   dateOfBirth: Joi.date().max("now").required(),
@@ -71,7 +74,7 @@ const registerSchema = Joi.object({
   }).optional(),
   role: Joi.string().valid('patient','doctor','admin').optional(),
   imageUrl: Joi.string().uri().optional(),
-});
+}).unknown(true); // allow unknown keys at schema root to be permissive
 
 const loginSchema = Joi.object({
   email: Joi.string().email().required(),
@@ -86,11 +89,16 @@ const biometricSchema = Joi.object({
 // Register new patient
 router.post("/register", async (req, res) => {
   try {
-    // Validate input
-    const { error, value } = registerSchema.validate(req.body);
-    if (error) {
-      return res.status(400).json({ message: error.details[0].message });
-    }
+  // Debug: log incoming payload to help diagnose validation issues
+  console.log('Register payload received:', req.body);
+
+  // Validate input (allow unknown keys and strip them). Use abortEarly:false to collect all errors.
+  const { error, value } = registerSchema.validate(req.body, { abortEarly: false, allowUnknown: true, stripUnknown: true });
+  if (error) {
+    console.warn('Registration validation failed:', error.details);
+    const messages = error.details.map(d => d.message);
+    return res.status(400).json({ message: messages.join('; '), details: error.details });
+  }
 
     const {
       email,
@@ -102,7 +110,8 @@ router.post("/register", async (req, res) => {
       emergencyContact,
       medicalHistory,
       role,
-      imageUrl
+      imageUrl,
+      specialty
     } = value;
 
     // Check if user already exists
@@ -136,6 +145,7 @@ router.post("/register", async (req, res) => {
         phone,
         email,
         imageUrl: imageUrl || null,
+        ...(specialty ? { specialty } : {}),
       });
       await doctor.save();
     } else {

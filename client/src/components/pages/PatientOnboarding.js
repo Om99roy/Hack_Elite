@@ -18,6 +18,7 @@ const PatientOnboarding = () => {
     confirmPassword: '',
   role: 'patient',
   imageUrl: '',
+  specialty: '',
     dateOfBirth: '',
     gender: '',
     
@@ -110,13 +111,15 @@ const PatientOnboarding = () => {
       const userData = {
         fullName: formData.fullName,
         email: formData.email,
-        phone: formData.phone,
+        phone: (formData.phone || '').trim(),
         password: formData.password,
-        dateOfBirth: formData.dateOfBirth,
+        // send dateOfBirth as ISO date string (server expects a date)
+        dateOfBirth: formData.dateOfBirth ? new Date(formData.dateOfBirth).toISOString() : undefined,
         gender: formData.gender,
         role: formData.role,
         // only include imageUrl when provided (avoid sending null which fails server validation)
         ...(formData.imageUrl ? { imageUrl: formData.imageUrl } : {}),
+        ...(formData.role === 'doctor' && formData.specialty ? { specialty: formData.specialty } : {}),
         emergencyContact: {
           name: formData.emergencyContactName,
           phone: formData.emergencyContactPhone,
@@ -232,10 +235,16 @@ const PatientOnboarding = () => {
                   </div>
 
                   {formData.role === 'doctor' && (
-                    <div>
-                      <label className="block text-white text-sm font-medium mb-2">Profile Image URL</label>
-                      <input type="text" name="imageUrl" value={formData.imageUrl} onChange={handleInputChange} className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white" placeholder="https://..." />
-                    </div>
+                    <>
+                      <div>
+                        <label className="block text-white text-sm font-medium mb-2">Profile Image URL</label>
+                        <input type="text" name="imageUrl" value={formData.imageUrl} onChange={handleInputChange} className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white" placeholder="https://..." />
+                      </div>
+                      <div>
+                        <label className="block text-white text-sm font-medium mb-2">Specialty</label>
+                        <input type="text" name="specialty" value={formData.specialty} onChange={handleInputChange} className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white" placeholder="e.g. Ophthalmologist" />
+                      </div>
+                    </>
                   )}
 
                   <div>

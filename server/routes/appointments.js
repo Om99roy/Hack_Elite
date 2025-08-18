@@ -51,7 +51,8 @@ router.post('/book', async (req, res) => {
       return res.status(400).json({ message: error.details[0].message });
     }
 
-    // Mock appointment booking
+    // Persist appointment in in-memory store for demo
+    const { addAppointment } = require('../services/appointmentsStore');
     const appointment = {
       id: `apt_${Date.now()}`,
       patientId: req.user.userId,
@@ -63,6 +64,18 @@ router.post('/book', async (req, res) => {
       notes: value.notes,
       createdAt: new Date()
     };
+
+    addAppointment(appointment);
+
+    // Emit socket event to doctor room if io available
+    try {
+      const io = req.app.get('io');
+      if (io && value.doctorId) {
+        io.to(`doctor_${value.doctorId}`).emit('appointment_booked', appointment);
+      }
+    } catch (emitErr) {
+      console.error('Socket emit failed:', emitErr);
+    }
 
     res.status(201).json({
       message: 'Appointment booked successfully',
@@ -168,6 +181,19 @@ router.get('/my-appointments', async (req, res) => {
 
   } catch (error) {
     console.error('Get my appointments error:', error);
+    res.status(500).json({ message: 'Failed to get appointments' });
+  }
+});
+
+// Get appointments for logged-in doctor
+router.get('/for-doctor', async (req, res) => {
+  try {
+    const doctorId = req.user.userId;
+    const { getAppointmentsByDoctor } = require('../services/appointmentsStore');
+    const appts = getAppointmentsByDoctor(doctorId);
+    res.json({ appointments: appts });
+  } catch (error) {
+    console.error('Get appointments for doctor error:', error);
     res.status(500).json({ message: 'Failed to get appointments' });
   }
 });

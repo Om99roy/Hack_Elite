@@ -13,16 +13,16 @@ import {
   AlertTriangle,
   Star,
   Video,
-  Building,
-  CreditCard,
   Shield
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useSocket } from '../../contexts/SocketContext';
+import api from '../../services/api';
 import toast from 'react-hot-toast';
 
 const AppointmentBooking = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  useAuth();
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState(null);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
@@ -31,48 +31,8 @@ const AppointmentBooking = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  // Mock data
-  const doctors = [
-    {
-      id: 1,
-      name: 'Dr. Sarah Johnson',
-      specialization: 'Ophthalmologist',
-      rating: 4.9,
-      experience: '15 years',
-      image: 'https://via.placeholder.com/100x100/3b82f6/ffffff?text=Dr.+SJ',
-      availableSlots: ['09:00', '10:00', '14:00', '15:00'],
-      location: 'Eye Care Center, Downtown',
-      consultationFee: 150,
-      languages: ['English', 'Spanish'],
-      telemedicine: true
-    },
-    {
-      id: 2,
-      name: 'Dr. Michael Chen',
-      specialization: 'Optometrist',
-      rating: 4.8,
-      experience: '12 years',
-      image: 'https://via.placeholder.com/100x100/10b981/ffffff?text=Dr.+MC',
-      availableSlots: ['11:00', '13:00', '16:00', '17:00'],
-      location: 'Vision Clinic, Midtown',
-      consultationFee: 120,
-      languages: ['English', 'Mandarin'],
-      telemedicine: true
-    },
-    {
-      id: 3,
-      name: 'Dr. Emily Rodriguez',
-      specialization: 'Retina Specialist',
-      rating: 4.9,
-      experience: '18 years',
-      image: 'https://via.placeholder.com/100x100/f59e0b/ffffff?text=Dr.+ER',
-      availableSlots: ['08:00', '12:00', '15:00'],
-      location: 'Advanced Eye Institute',
-      consultationFee: 200,
-      languages: ['English', 'Spanish'],
-      telemedicine: false
-    }
-  ];
+  // Live doctors from server
+  const [doctors, setDoctors] = useState([]);
 
   const appointmentTypes = [
     {
@@ -110,15 +70,22 @@ const AppointmentBooking = () => {
     '13:00', '14:00', '15:00', '16:00', '17:00'
   ];
 
-  const availableDates = [
-    { date: '2024-01-22', day: 'Monday', available: true },
-    { date: '2024-01-23', day: 'Tuesday', available: true },
-    { date: '2024-01-24', day: 'Wednesday', available: true },
-    { date: '2024-01-25', day: 'Thursday', available: true },
-    { date: '2024-01-26', day: 'Friday', available: true },
-    { date: '2024-01-27', day: 'Saturday', available: false },
-    { date: '2024-01-28', day: 'Sunday', available: false }
-  ];
+  
+
+  const generateAvailableDates = () => {
+    const dates = [];
+    const now = new Date();
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(now);
+      d.setDate(now.getDate() + i);
+      const dayName = d.toLocaleString(undefined, { weekday: 'long' });
+      const isWeekend = d.getDay() === 0 || d.getDay() === 6;
+      dates.push({ date: d.toISOString().slice(0, 10), day: dayName, available: !isWeekend });
+    }
+    return dates;
+  };
+
+  const availableDates = generateAvailableDates();
 
   const handleDateSelect = (date) => {
     setSelectedDate(date);
@@ -136,23 +103,85 @@ const AppointmentBooking = () => {
     setCurrentStep(4);
   };
 
+  const { socket } = useSocket();
+
+  const loadDoctors = async () => {
+    try {
+      const res = await api.get('/doctors');
+      // server returns array of doctors
+      setDoctors(res.data || []);
+    } catch (err) {
+      console.error('Failed to load doctors', err);
+    }
+  };
+
+  useEffect(() => {
+    loadDoctors();
+  }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+    const handler = () => {
+      loadDoctors();
+    };
+    socket.on('doctors-updated', handler);
+    return () => socket.off('doctors-updated', handler);
+  }, [socket]);
+
   const handleBooking = async () => {
     setLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast.success('Appointment booked successfully!', {
-        icon: '✅',
-        duration: 4000,
-      });
-      
-      // Navigate to confirmation or dashboard
-      setTimeout(() => {
+      if (!selectedDoctor) throw new Error('Please select a doctor');
+
+  // Normalize values to match server Joi schema:
+  // server expects types like 'consultation', 'follow_up', 'emergency', 'routine'
+  const typeMap = {
+    consultation: 'consultation',
+    followup: 'follow_up',
+    follow_up: 'follow_up',
+    emergency: 'emergency',
+    telemedicine: 'consultation',
+    routine: 'routine'
+  };
+
+  // Ensure the date is a full ISO datetime in UTC (set midday) so Joi.min('now') passes for same-day bookings
+  const isoDate = selectedDate ? new Date(`${selectedDate}T12:00:00Z`).toISOString() : null;
+
+  const payload = {
+    doctorId: selectedDoctor._id || selectedDoctor.id,
+    date: isoDate,
+    time: selectedTime,
+    type: typeMap[appointmentType] || 'consultation',
+    notes
+  };
+
+      // Client-side validation to avoid server 400 and to provide clearer messages
+      if (!payload.doctorId) {
+        throw new Error('No doctor selected.');
+      }
+      if (!payload.date || isNaN(Date.parse(payload.date))) {
+        throw new Error('Invalid appointment date.');
+      }
+      if (!payload.time || !/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/.test(payload.time)) {
+        throw new Error('Invalid appointment time.');
+      }
+      const allowedTypes = ['consultation', 'follow_up', 'emergency', 'routine'];
+      if (!allowedTypes.includes(payload.type)) {
+        throw new Error('Invalid appointment type.');
+      }
+
+      console.debug('Booking payload:', payload);
+      const res = await api.post('/appointments/book', payload);
+      if (res.status === 201) {
+        toast.success('Appointment booked successfully!', { icon: '✅', duration: 4000 });
         navigate('/patient/dashboard');
-      }, 2000);
+      } else {
+        throw new Error(res.data?.message || 'Booking failed');
+      }
     } catch (error) {
-      toast.error('Failed to book appointment. Please try again.');
+      console.error('Booking error', error, error.response?.data);
+      const serverMessage = error.response?.data?.message;
+      toast.error(serverMessage || error.message || 'Failed to book appointment. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -310,29 +339,30 @@ const AppointmentBooking = () => {
                 <div className="space-y-4">
                   {doctors.map((doctor) => (
                     <div
-                      key={doctor.id}
+                      key={doctor._id || doctor.id}
                       onClick={() => handleDoctorSelect(doctor)}
                       className="glass-card p-6 cursor-pointer hover:scale-105 transition-all"
                     >
                       <div className="flex items-center space-x-4">
                         <img
-                          src={doctor.image}
-                          alt={doctor.name}
+                          src={doctor.imageUrl || doctor.image || '/images/avatar-placeholder.png'}
+                          alt={doctor.fullName || doctor.name}
+                          onError={(e) => { e.target.onerror = null; e.target.src = '/images/avatar-placeholder.png'; }}
                           className="w-16 h-16 rounded-full"
                         />
                         <div className="flex-1">
-                          <h3 className="text-lg font-semibold text-white">{doctor.name}</h3>
-                          <p className="text-brand-200">{doctor.specialization}</p>
+                          <h3 className="text-lg font-semibold text-white">{doctor.fullName || doctor.name}</h3>
+                          <p className="text-brand-200">{doctor.specialty || doctor.specialization}</p>
                           <div className="flex items-center space-x-4 mt-2">
                             <div className="flex items-center space-x-1">
                               <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                              <span className="text-white text-sm">{doctor.rating}</span>
+                              <span className="text-white text-sm">{doctor.rating || '—'}</span>
                             </div>
-                            <span className="text-brand-200 text-sm">{doctor.experience} experience</span>
+                            <span className="text-brand-200 text-sm">{doctor.experience || ''} </span>
                           </div>
                         </div>
                         <div className="text-right">
-                          <div className="text-white font-semibold">${doctor.consultationFee}</div>
+                          <div className="text-white font-semibold">{doctor.consultationFee ? `$${doctor.consultationFee}` : ''}</div>
                           <div className="text-brand-200 text-sm">Consultation</div>
                         </div>
                       </div>
@@ -340,7 +370,7 @@ const AppointmentBooking = () => {
                       <div className="mt-4 flex items-center justify-between">
                         <div className="flex items-center space-x-2 text-brand-200 text-sm">
                           <MapPin className="w-4 h-4" />
-                          <span>{doctor.location}</span>
+                          <span>{doctor.clinic || doctor.location || ''}</span>
                         </div>
                         {doctor.telemedicine && (
                           <div className="flex items-center space-x-2 text-green-400 text-sm">
@@ -494,10 +524,7 @@ const AppointmentBooking = () => {
                   <Mail className="w-4 h-4 mr-2" />
                   Send Message
                 </button>
-                <button className="w-full glass-button text-sm">
-                  <Building className="w-4 h-4 mr-2" />
-                  Find Nearby Clinics
-                </button>
+                {/* Nearby clinics removed per product decision */}
               </div>
             </motion.div>
 

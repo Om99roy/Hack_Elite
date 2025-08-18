@@ -12,6 +12,14 @@ router.use(authorizeDoctor);
 router.get('/queue', async (req, res) => {
   try {
     // Mock patient queue data
+    // Create dates 7 days from now for deterministic demo data
+    const inSevenDays = (hoursOffset = 9) => {
+      const d = new Date();
+      d.setDate(d.getDate() + 7);
+      d.setHours(hoursOffset, 0, 0, 0);
+      return d.toISOString();
+    };
+
     const patientQueue = [
       {
         patientId: 'pat_001',
@@ -19,7 +27,7 @@ router.get('/queue', async (req, res) => {
         patientName: 'John Doe',
         priorityLevel: 'critical',
         riskScore: 95,
-        testDate: '2024-01-20T10:30:00Z',
+        testDate: inSevenDays(10),
         status: 'pending_review',
         aiConfidence: 92,
         detectedConditions: ['conjunctivitis', 'swelling']
@@ -30,7 +38,7 @@ router.get('/queue', async (req, res) => {
         patientName: 'Jane Smith',
         priorityLevel: 'urgent',
         riskScore: 78,
-        testDate: '2024-01-20T09:15:00Z',
+        testDate: inSevenDays(9),
         status: 'pending_review',
         aiConfidence: 88,
         detectedConditions: ['stye']
@@ -41,7 +49,7 @@ router.get('/queue', async (req, res) => {
         patientName: 'Mike Johnson',
         priorityLevel: 'moderate',
         riskScore: 65,
-        testDate: '2024-01-20T08:45:00Z',
+        testDate: inSevenDays(8),
         status: 'pending_review',
         aiConfidence: 85,
         detectedConditions: []
@@ -215,37 +223,20 @@ router.post('/prescription', async (req, res) => {
 router.get('/today-appointments', async (req, res) => {
   try {
     // Mock today's appointments
+    const makeTime = (hour) => {
+      const d = new Date();
+      d.setDate(d.getDate() + 7);
+      d.setHours(hour, 0, 0, 0);
+      return d.toISOString();
+    };
+
     const appointments = [
-      {
-        id: 'apt_001',
-        patientName: 'John Doe',
-        time: '09:00',
-        type: 'consultation',
-        status: 'confirmed',
-        priorityLevel: 'critical'
-      },
-      {
-        id: 'apt_002',
-        patientName: 'Jane Smith',
-        time: '10:30',
-        type: 'follow_up',
-        status: 'confirmed',
-        priorityLevel: 'urgent'
-      },
-      {
-        id: 'apt_003',
-        patientName: 'Mike Johnson',
-        time: '14:00',
-        type: 'routine',
-        status: 'confirmed',
-        priorityLevel: 'normal'
-      }
+      { id: 'apt_001', patientName: 'John Doe', time: makeTime(9), type: 'consultation', status: 'confirmed', priorityLevel: 'critical' },
+      { id: 'apt_002', patientName: 'Jane Smith', time: makeTime(10), type: 'follow_up', status: 'confirmed', priorityLevel: 'urgent' },
+      { id: 'apt_003', patientName: 'Mike Johnson', time: makeTime(14), type: 'routine', status: 'confirmed', priorityLevel: 'normal' }
     ];
 
-    res.json({
-      date: new Date().toISOString().split('T')[0],
-      appointments
-    });
+    res.json({ date: new Date().toISOString().split('T')[0], appointments });
 
   } catch (error) {
     console.error('Get today appointments error:', error);

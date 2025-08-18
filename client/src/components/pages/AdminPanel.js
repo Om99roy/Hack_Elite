@@ -7,7 +7,6 @@ const AdminPanel = () => {
   const { user } = useAuth();
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ fullName: '', email: '', phone: '', specialty: '', clinic: '', imageUrl: '' });
 
   const loadDoctors = async () => {
     setLoading(true);
@@ -22,25 +21,7 @@ const AdminPanel = () => {
 
   useEffect(() => { loadDoctors(); }, []);
 
-  const handleCreate = async () => {
-    try {
-      const payload = {
-        fullName: form.fullName,
-        email: form.email,
-        phone: form.phone,
-        specialty: form.specialty,
-        clinic: form.clinic,
-        ...(form.imageUrl ? { imageUrl: form.imageUrl } : {}),
-      };
-      const res = await adminAPI.createDoctor(payload);
-      toast.success('Doctor created');
-      setForm({ fullName: '', email: '', phone: '', specialty: '', clinic: '', imageUrl: '' });
-      loadDoctors();
-    } catch (err) {
-      console.error(err);
-      toast.error('Failed to create doctor');
-    }
-  };
+  // Doctor creation via admin panel disabled - admin can only remove doctors.
 
   const handleDelete = async (id) => {
     try {
@@ -58,18 +39,8 @@ const AdminPanel = () => {
       <div className="max-w-6xl mx-auto">
         <h2 className="text-2xl font-bold text-sky-900 mb-4">Admin Panel</h2>
         <div className="glass-card p-4 mb-6">
-          <h3 className="font-semibold mb-2">Create Doctor</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <input value={form.fullName} onChange={e=>setForm({...form, fullName:e.target.value})} placeholder="Full name" className="p-2 rounded" />
-            <input value={form.email} onChange={e=>setForm({...form, email:e.target.value})} placeholder="Email" className="p-2 rounded" />
-            <input value={form.phone} onChange={e=>setForm({...form, phone:e.target.value})} placeholder="Phone" className="p-2 rounded" />
-            <input value={form.specialty} onChange={e=>setForm({...form, specialty:e.target.value})} placeholder="Specialty" className="p-2 rounded" />
-            <input value={form.clinic} onChange={e=>setForm({...form, clinic:e.target.value})} placeholder="Clinic" className="p-2 rounded" />
-            <input value={form.imageUrl} onChange={e=>setForm({...form, imageUrl:e.target.value})} placeholder="Image URL" className="p-2 rounded" />
-          </div>
-          <div className="mt-3">
-            <button onClick={handleCreate} className="glass-cta">Create Doctor</button>
-          </div>
+          <h3 className="font-semibold mb-2">Doctors (admin can only remove)</h3>
+          <p className="text-sm text-sky-700 mb-3">Doctor creation via admin panel is disabled. Doctors must register themselves. Admin can remove doctors below.</p>
         </div>
 
         <div className="glass-card p-4">
@@ -79,10 +50,19 @@ const AdminPanel = () => {
               {doctors.map(d => (
                 <div key={d._id} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    {d.imageUrl ? <img src={d.imageUrl} alt={d.fullName} className="w-12 h-12 rounded-full" /> : <div className="w-12 h-12 bg-sky-200 rounded-full" />}
+                    {d.imageUrl ? (
+                      <img
+                        src={d.imageUrl}
+                        alt={d.fullName}
+                        className="w-12 h-12 rounded-full object-cover"
+                        onError={(e) => { e.target.onerror = null; e.target.src = '/images/avatar-placeholder.png'; }}
+                      />
+                    ) : (
+                      <img src="/images/avatar-placeholder.png" alt="placeholder" className="w-12 h-12 rounded-full object-cover" />
+                    )}
                     <div>
                       <div className="font-semibold">{d.fullName}</div>
-                      <div className="text-sm text-sky-700">{d.email} • {d.specialty}</div>
+                      <div className="text-sm text-sky-700">{d.email} • {d.specialty || 'Not specified'}</div>
                     </div>
                   </div>
                   <div>

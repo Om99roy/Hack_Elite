@@ -187,12 +187,10 @@ export const AuthProvider = ({ children }) => {
     try {
       // For now, just update the local state
       // In a real implementation, you would call the API
-      dispatch({
-        type: 'UPDATE_USER',
-        payload: profileData,
-      });
+      dispatch({ type: 'UPDATE_USER', payload: profileData });
       toast.success('Profile updated successfully');
     } catch (error) {
+      console.error('Update profile error:', error);
       toast.error('Failed to update profile');
     }
   };

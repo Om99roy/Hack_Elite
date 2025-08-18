@@ -16,36 +16,9 @@ router.get('/doctors', auth, authorizeAdmin, async (req, res) => {
 });
 
 // Create doctor (admin)
+// Admin-side doctor creation disabled: doctors must register themselves.
 router.post('/doctors', auth, authorizeAdmin, async (req, res) => {
-  try {
-    const { email, fullName, phone, specialty, clinic, imageUrl } = req.body;
-    // Create or find user
-    let user = await User.findOne({ email });
-    if (!user) {
-      user = new User({ email, phone, password: 'ChangeMe123!', role: 'doctor' });
-      await user.save();
-    } else {
-      user.role = 'doctor';
-      await user.save();
-    }
-
-    // Create doctor doc
-    const doc = new Doctor({
-      userId: user._id,
-      fullName,
-      phone,
-      email,
-      specialty,
-      clinic,
-      imageUrl: imageUrl || null
-    });
-    await doc.save();
-
-    res.status(201).json({ message: 'Doctor created', doctor: doc });
-  } catch (err) {
-    console.error('Admin create doctor error:', err);
-    res.status(500).json({ message: 'Failed to create doctor' });
-  }
+  return res.status(405).json({ message: 'Doctor creation via admin panel is disabled. Doctors must register themselves.' });
 });
 
 // Delete doctor by id
@@ -53,6 +26,13 @@ router.delete('/doctors/:id', auth, authorizeAdmin, async (req, res) => {
   try {
     const id = req.params.id;
     await Doctor.findByIdAndDelete(id);
+    // Notify connected clients that doctors list changed
+    try {
+      const io = req.app.get('io');
+      if (io) io.emit('doctors-updated');
+    } catch (e) {
+      console.error('Emit doctors-updated failed', e);
+    }
     res.json({ message: 'Doctor removed' });
   } catch (err) {
     console.error('Admin delete doctor error:', err);

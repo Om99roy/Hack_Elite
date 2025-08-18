@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Users, Calendar, TrendingUp, Filter, Search, MessageSquare, Clock, Plus, FileText, Phone, Mail, MapPin } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
+import { useSocket } from '../../contexts/SocketContext';
+import api from '../../services/api';
 
 const DoctorPortal = () => {
   const navigate = useNavigate();
@@ -11,6 +13,7 @@ const DoctorPortal = () => {
   const [activeTab, setActiveTab] = useState('queue');
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { socket } = useSocket();
 
   // Redirect if not a doctor (extra safeguard)
   useEffect(() => {
@@ -19,35 +22,42 @@ const DoctorPortal = () => {
     }
   }, [user, navigate]);
 
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await api.get('/appointments/for-doctor');
+        if (res?.data?.appointments) {
+          setTodayAppointments(res.data.appointments.map(a => ({
+            id: a.id,
+            patientName: a.patientId,
+            time: a.time,
+            type: a.type,
+            status: a.status,
+            priority: 'normal'
+          })));
+        }
+      } catch (err) {
+        console.error('Failed to load doctor appointments', err);
+      }
+    };
+    load();
+  }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+    const handler = (appointment) => {
+      toast.success(`New appointment booked by patient`, { duration: 4000 });
+      // Optionally reload appointments
+      window.location.reload();
+    };
+    socket.on('appointment_booked', handler);
+    return () => socket.off('appointment_booked', handler);
+  }, [socket]);
+
   // No fake data: start with empty queue until real API integration populates it
   const patientQueue = [];
 
-  const todayAppointments = [
-    {
-      id: 'A001',
-      patientName: 'Sarah Wilson',
-      time: '09:00 AM',
-      type: 'Follow-up',
-      status: 'confirmed',
-      priority: 'routine'
-    },
-    {
-      id: 'A002',
-      patientName: 'Robert Johnson',
-      time: '11:30 AM',
-      type: 'Consultation',
-      status: 'confirmed',
-      priority: 'moderate'
-    },
-    {
-      id: 'A003',
-      patientName: 'Lisa Brown',
-      time: '02:00 PM',
-      type: 'Emergency',
-      status: 'pending',
-      priority: 'urgent'
-    }
-  ];
+  const [todayAppointments, setTodayAppointments] = useState([]);
 
   const analytics = {
     totalPatients: 0,

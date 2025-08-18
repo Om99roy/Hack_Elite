@@ -20,6 +20,9 @@ const io = new Server(server, {
   }
 });
 
+// expose io on app for route handlers to emit events without circular requires
+app.set('io', io);
+
 // Middleware
 app.use(helmet());
 app.use(compression());
@@ -89,6 +92,7 @@ app.use('/api/doctor', require('./routes/doctor'));
 app.use('/api/upload', require('./routes/upload'));
 app.use('/api/contact', require('./routes/contact'));
 app.use('/api/admin', require('./routes/admin'));
+app.use('/api/doctors', require('./routes/doctors'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

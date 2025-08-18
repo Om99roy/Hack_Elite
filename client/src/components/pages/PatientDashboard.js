@@ -18,9 +18,10 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
+import { useSocket } from '../../contexts/SocketContext';
 
 const PatientDashboard = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, token } = useAuth();
   const [dashboardData, setDashboardData] = useState({
     healthStatus: 'normal',
     riskScore: 0,
@@ -33,34 +34,72 @@ const PatientDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [loadErrorShown, setLoadErrorShown] = useState(false);
   const initRef = useRef(false);
+  const [doctors, setDoctors] = useState([]);
+  const { socket } = useSocket();
+  
+  // Redirect to login if no token
+  useEffect(() => {
+    if (!token) {
+      // small delay to allow auth initialization
+      setTimeout(() => {
+        window.location.href = '/login';
+      }, 200);
+    }
+  }, [token]);
 
   useEffect(() => {
+    // Wait until we have an auth token before calling protected endpoints
+    if (!token) return;
     // Prevent double invocation in React StrictMode during development
     if (initRef.current) return;
     initRef.current = true;
-    loadDashboardData();
-  }, []);
-
-  const loadDashboardData = async () => {
-    try {
-      // Mock data for demo
-      // Try to fetch real dashboard data from API (fallback to demo data)
-      const res = await patientAPI.getDashboard();
-      if (res?.data) {
-        setDashboardData(res.data);
-      } else {
-        throw new Error('No dashboard data');
+    (async () => {
+      try {
+        setLoading(true);
+        // load dashboard
+        const res = await patientAPI.getDashboard();
+        if (res?.data) setDashboardData(res.data);
+      } catch (err) {
+        console.error('Load dashboard error:', err?.response?.data || err.message || err);
+        if (!loadErrorShown) {
+          const serverMessage = err.response?.data?.message;
+          toast.error(serverMessage || 'Failed to load dashboard data — server unreachable or returned error. Please ensure backend is running.');
+          setLoadErrorShown(true);
+        }
       }
-      setLoading(false);
-    } catch (error) {
-  console.error('Load dashboard error:', error?.response?.data || error.message || error);
-  // show the error toast once per session to avoid spam
-  if (!loadErrorShown) {
-    toast.error('Failed to load dashboard data — server unreachable or returned error. Please ensure you are logged in and the backend is running.');
-    setLoadErrorShown(true);
-  }
-  // leave default/empty dashboard data as a safe fallback
-      setLoading(false);
+
+      // load doctors (public)
+        try {
+          const resp = await fetch((process.env.REACT_APP_API_URL || 'http://localhost:5000') + '/api/doctors');
+          if (resp.ok) {
+            const data = await resp.json();
+            setDoctors(data || []);
+          }
+        } catch (err) {
+          console.error('Failed to load doctors', err);
+        } finally {
+          setLoading(false);
+        }
+    })();
+
+    if (!socket) return undefined;
+
+    const handler = () => loadDoctors();
+    socket.on('doctors-updated', handler);
+    return () => {
+      socket.off('doctors-updated', handler);
+    };
+  }, [socket, loadErrorShown, token]);
+
+  // loadDashboardData inlined into useEffect; kept helper functions for doctors
+
+  const loadDoctors = async () => {
+    try {
+      // use axios instance for consistent baseURL and error handling
+      const res = await (await import('../../services/api')).default.get('/doctors');
+      setDoctors(res.data || []);
+    } catch (err) {
+      console.error('Failed to load doctors', err);
     }
   };
 
@@ -358,6 +397,31 @@ const PatientDashboard = () => {
                   </div>
                 ) : (
                   <p className="text-blue-200 text-sm">No new notifications</p>
+                )}
+              </motion.div>
+
+              {/* Available Doctors */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.3 }}
+                className="glass-card p-6"
+              >
+                <h3 className="text-lg font-semibold text-white mb-4">Available Doctors</h3>
+                {doctors.length > 0 ? (
+                  <div className="space-y-3">
+                    {doctors.map((doc) => (
+                      <div key={doc.id} className="flex items-center gap-3">
+                        <img src={doc.imageUrl || '/images/avatar-placeholder.png'} alt={doc.fullName} className="w-10 h-10 rounded-full object-cover" onError={(e)=>{e.target.onerror=null; e.target.src='/images/avatar-placeholder.png'}} />
+                        <div>
+                          <div className="text-white font-medium">{doc.fullName}</div>
+                          <div className="text-blue-200 text-sm">{doc.specialty || 'Not specified'}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-blue-200 text-sm">No doctors available yet</p>
                 )}
               </motion.div>
 
