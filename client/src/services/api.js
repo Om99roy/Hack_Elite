@@ -45,8 +45,9 @@ export const authAPI = {
   register: (userData) => api.post('/auth/register', userData),
   biometricVerify: (biometricData) => api.post('/auth/biometric-verify', biometricData),
   enableBiometric: (biometricTemplate) => api.post('/auth/enable-biometric', biometricTemplate),
-  sendOTP: (phone) => api.post('/auth/otp-send', { phone }),
-  verifyOTP: (phone, otp) => api.post('/auth/otp-verify', { phone, otp }),
+  // OTP endpoints removed - use face verification flow instead.
+  // sendOTP: (phone) => api.post('/auth/otp-send', { phone }),
+  // verifyOTP: (phone, otp) => api.post('/auth/otp-verify', { phone, otp }),
   verify: () => api.get('/auth/verify'),
 };
 
@@ -94,6 +95,13 @@ export const doctorAPI = {
   createPrescription: (prescriptionData) => api.post('/doctor/prescription', prescriptionData),
   getTodayAppointments: () => api.get('/doctor/today-appointments'),
   getPendingReviews: () => api.get('/doctor/pending-reviews'),
+};
+
+// Admin endpoints
+export const adminAPI = {
+  listDoctors: () => api.get('/admin/doctors'),
+  createDoctor: (data) => api.post('/admin/doctors', data),
+  deleteDoctor: (id) => api.delete(`/admin/doctors/${id}`),
 };
 
 // File upload endpoints

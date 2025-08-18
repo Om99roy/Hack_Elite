@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { patientAPI } from '../../services/api';
@@ -30,8 +31,13 @@ const PatientDashboard = () => {
     notifications: []
   });
   const [loading, setLoading] = useState(true);
+  const [loadErrorShown, setLoadErrorShown] = useState(false);
+  const initRef = useRef(false);
 
   useEffect(() => {
+    // Prevent double invocation in React StrictMode during development
+    if (initRef.current) return;
+    initRef.current = true;
     loadDashboardData();
   }, []);
 
@@ -47,7 +53,13 @@ const PatientDashboard = () => {
       }
       setLoading(false);
     } catch (error) {
-      toast.error('Failed to load dashboard data');
+  console.error('Load dashboard error:', error?.response?.data || error.message || error);
+  // show the error toast once per session to avoid spam
+  if (!loadErrorShown) {
+    toast.error('Failed to load dashboard data — server unreachable or returned error. Please ensure you are logged in and the backend is running.');
+    setLoadErrorShown(true);
+  }
+  // leave default/empty dashboard data as a safe fallback
       setLoading(false);
     }
   };

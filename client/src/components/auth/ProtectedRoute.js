@@ -11,18 +11,13 @@ const ProtectedRoute = ({ children, role }) => {
   }
 
   if (!isAuthenticated) {
+    // not logged in → go to login
     return <Navigate to="/login" replace />;
   }
 
+  // if a role is required but the authenticated user has different role, block access
   if (role && user?.role !== role) {
-    // Redirect to appropriate dashboard based on user role
-    if (user?.role === 'patient') {
-      return <Navigate to="/patient/dashboard" replace />;
-    } else if (user?.role === 'doctor') {
-      return <Navigate to="/doctor/portal" replace />;
-    } else {
-      return <Navigate to="/" replace />;
-    }
+    return <Navigate to="/" replace />;
   }
 
   return children;

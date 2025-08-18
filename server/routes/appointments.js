@@ -26,11 +26,7 @@ router.get('/available', async (req, res) => {
     res.json({
       date: date || new Date().toISOString().split('T')[0],
       slots: availableSlots,
-      doctors: [
-        { id: 'doc_001', name: 'Dr. Sarah Johnson', specialization: 'Ophthalmology' },
-        { id: 'doc_002', name: 'Dr. Michael Chen', specialization: 'Optometry' },
-        { id: 'doc_003', name: 'Dr. Emily Davis', specialization: 'Ophthalmology' }
-      ]
+      doctors: [] // doctors should be managed by admin; no default doctors
     });
 
   } catch (error) {

@@ -66,19 +66,7 @@ export const AuthProvider = ({ children }) => {
     const initializeAuth = async () => {
       const token = localStorage.getItem('token');
       if (token) {
-        // Dev shortcut: if a dev_user is present in localStorage, use it directly
-        if (process.env.NODE_ENV !== 'production') {
-          const devUserRaw = localStorage.getItem('dev_user');
-          if (devUserRaw) {
-            const devUser = JSON.parse(devUserRaw);
-            dispatch({
-              type: 'LOGIN_SUCCESS',
-              payload: { user: devUser, token },
-            });
-            return;
-          }
-        }
-        try {
+  try {
           const response = await authAPI.verify();
           // Normalize full name coming from backend (may be _fullName)
           const userFromServer = response.data.user || {};
@@ -116,7 +104,14 @@ export const AuthProvider = ({ children }) => {
       });
 
       toast.success('Login successful!');
-      navigate('/patient/dashboard');
+      // Redirect based on role
+      if (user.role === 'doctor') {
+        navigate('/doctor/portal');
+      } else if (user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/patient/dashboard');
+      }
     } catch (error) {
       console.error('Login error:', error);
       const message = error.response?.data?.message || 'Login failed';
@@ -138,7 +133,13 @@ export const AuthProvider = ({ children }) => {
       });
 
       toast.success('Biometric authentication successful!');
-      navigate('/patient/dashboard');
+      if (user.role === 'doctor') {
+        navigate('/doctor/portal');
+      } else if (user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/patient/dashboard');
+      }
     } catch (error) {
       console.error('Biometric login error:', error);
       const message = error.response?.data?.message || 'Biometric authentication failed';
@@ -160,7 +161,13 @@ export const AuthProvider = ({ children }) => {
       });
 
       toast.success('Account created successfully!');
-      navigate('/patient/dashboard');
+      if (user.role === 'doctor') {
+        navigate('/doctor/portal');
+      } else if (user.role === 'admin') {
+        navigate('/admin');
+      } else {
+        navigate('/patient/dashboard');
+      }
     } catch (error) {
       console.error('Registration error:', error);
       const message = error.response?.data?.message || 'Registration failed';

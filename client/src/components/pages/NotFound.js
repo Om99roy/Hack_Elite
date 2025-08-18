@@ -10,9 +10,9 @@ const NotFound = () => {
         <h1 className="text-3xl font-bold text-white mb-2">Oops — page not found</h1>
         <p className="text-brand-200 mb-6">It seems the page you're looking for doesn't exist. Try one of the links below.</p>
         <div className="flex items-center justify-center gap-4">
-          <Link to="/" className="glass-button px-5 py-3">Home</Link>
-          <Link to="/login" className="glass-button px-5 py-3">Login</Link>
-          <Link to="/onboarding" className="glass-button px-5 py-3">Get Started</Link>
+          <Link to="/" className="glass-cta px-5 py-3">Home</Link>
+          <Link to="/login" className="glass-cta px-5 py-3">Login</Link>
+          <Link to="/onboarding" className="glass-cta px-5 py-3">Get Started</Link>
         </div>
       </div>
     </div>

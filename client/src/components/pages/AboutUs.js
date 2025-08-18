@@ -144,7 +144,7 @@ const AboutUs = () => {
         <div className="max-w-7xl mx-auto">
           <Link
             to="/"
-            className="inline-flex items-center space-x-2 text-white hover:text-brand-200 transition-colors mb-8"
+            className="inline-flex items-center space-x-2 glass-cta mb-8"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>Back to Home</span>
@@ -366,7 +366,7 @@ const AboutUs = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 to="/onboarding"
-                className="glass-button text-lg px-8 py-4 flex items-center justify-center space-x-2"
+                className="glass-cta text-lg px-8 py-4 flex items-center justify-center space-x-2"
               >
                 <span>Start Your Journey</span>
                 <ArrowLeft className="w-5 h-5 rotate-180" />

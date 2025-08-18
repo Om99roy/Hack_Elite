@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle, Camera, Brain, Heart, Menu, X } from 'lucide-react';
 import { TbHealthRecognition } from "react-icons/tb";
-import DevRoleSwitcher from '../ui/DevRoleSwitcher';
+// DevRoleSwitcher removed for production
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -34,10 +34,10 @@ const LandingPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,#ffd3ea_0%,#e54be0_45%,#6b1f80_100%)]">
-      {/* Navigation Header */}
-      <nav className="relative z-50 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+  <div className="min-h-screen bg-[linear-gradient(180deg,#e6f0ff_0%,#d7e8ff_25%,#cfe2ff_50%,#d0e1ff_75%,#eaf4ff_100%)] relative overflow-hidden">
+      {/* Navigation Header (overlay) */}
+      <nav className="absolute top-0 left-0 right-0 z-50 px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between bg-white/5 backdrop-blur-sm rounded-b-xl px-4 py-2 border border-white/10">
           {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
             <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
@@ -48,13 +48,13 @@ const LandingPage = () => {
 
           {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-4">
-            <Link to="/" className="glass-nav">Home</Link>
-            <Link to="/about" className="glass-nav">About Us</Link>
-            <Link to="/contact" className="glass-nav">Contact</Link>
-            <Link to="/login" className="glass-nav">Login</Link>
-            <Link to="/doctor/portal" className="glass-nav">Doctor Portal</Link>
-            <Link to="/onboarding" className="glass-button glass-button--float">Get Started</Link>
-          </div>
+              <Link to="/" className="glass-nav px-4 py-2 text-lg font-semibold transform transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 hover:shadow-xl">Home</Link>
+              <Link to="/about" className="glass-nav px-4 py-2 text-lg font-semibold transform transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 hover:shadow-xl">About Us</Link>
+              <Link to="/contact" className="glass-nav px-4 py-2 text-lg font-semibold transform transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 hover:shadow-xl">Contact</Link>
+              <Link to="/login" className="glass-nav px-4 py-2 text-lg font-semibold transform transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 hover:shadow-xl">Login</Link>
+              <Link to="/doctor/portal" className="glass-nav px-4 py-2 text-lg font-semibold transform transition-all duration-200 hover:scale-105 hover:-translate-y-0.5 hover:shadow-xl">Doctor Portal</Link>
+              <Link to="/onboarding" className="glass-button glass-button--float px-6 py-3 text-lg font-bold shadow-md hover:shadow-2xl transform hover:scale-105">Get Started</Link>
+            </div>
 
           {/* Mobile Menu Button */}
           <button
@@ -113,48 +113,53 @@ const LandingPage = () => {
         )}
       </nav>
 
-      {/* Hero Section */}
-      <section className="relative px-6 py-20">
-        {/* subtle animated backdrop */}
+      {/* Full-page Hero with overlayed content */}
+      <section className="relative w-full">
         <motion.div
-          className="absolute inset-0 pointer-events-none"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.35 }}
-          transition={{ duration: 1.2 }}
-          style={{ background: 'radial-gradient(circle at 20% 20%, rgba(99,102,241,0.15), transparent 20%), radial-gradient(circle at 80% 80%, rgba(139,92,246,0.12), transparent 25%)' }}
-        />
+          className="absolute inset-0"
+          initial={{ opacity: 0.9 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
+          <img src="/images/hero-people.jpg" alt="Healthcare team" className="w-full h-screen object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+        </motion.div>
 
-        <div className="relative z-10 max-w-5xl mx-auto">
+        {/* Overlay content centered and readable on top of image */}
+        <div className="relative z-40 flex items-center justify-center h-screen">
           <motion.div
             initial={{ opacity: 0, y: 20, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.8 }}
-            className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-10 md:p-14 text-center shadow-xl"
+            className="max-w-4xl text-center p-8 md:p-12 rounded-xl"
           >
-            <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight">
-              <span className="block bg-clip-text text-transparent bg-gradient-to-r from-brand-300 via-accent-300 to-accent-500">AI-Powered Eye Health</span>
-              <span className="block text-brand-100 mt-2 text-lg md:text-xl">Monitoring & Remote Screening</span>
+            <h1 className="text-4xl md:text-6xl font-extrabold text-white drop-shadow-lg leading-tight">
+              <span className="block">AI-Powered Eye Health</span>
+              <span className="block text-lg md:text-xl mt-2 text-white/90 font-medium">Monitoring & Remote Screening</span>
             </h1>
 
-            <p className="mt-6 text-base md:text-lg text-brand-100 max-w-3xl mx-auto">
+            <p className="mt-6 text-base md:text-lg text-white/85 max-w-3xl mx-auto">
               Transform your eye care with cutting-edge AI screening, secure biometric authentication, and instant, actionable reports — all from your smartphone.
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to="/onboarding" className="inline-flex items-center gap-3 bg-gradient-to-r from-brand-500 to-accent-500 text-white px-6 py-3 rounded-lg shadow-lg hover:scale-[1.02] transition-transform glass-button--float">
-                <span className="font-semibold">Start Free Screening</span>
+              <Link to="/onboarding" className="inline-flex items-center gap-2 bg-gradient-to-r from-sky-500 to-indigo-600 text-white px-6 py-3 rounded-lg text-lg font-semibold shadow-lg transform transition-all duration-200 hover:scale-105 hover:-translate-y-1">
+                Start Free Screening
                 <ArrowRight className="w-4 h-4" />
               </Link>
-              {/* Watch Demo removed per request */}
+              <Link to="/about" className="inline-flex items-center gap-2 border border-white/20 text-white px-5 py-3 rounded-lg text-lg font-medium backdrop-blur-sm bg-white/5 hover:bg-white/10 transform transition hover:scale-102">Learn More</Link>
             </div>
 
             {/* benefits small */}
-            <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6">
               {benefits.map((benefit, i) => (
-                <div key={i} className="text-center">
-                  <div className="mx-auto w-10 h-10 flex items-center justify-center text-white/90 mb-2">{benefit.icon}</div>
+                <motion.div key={i} initial={{ opacity: 0, y: 6 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.05 * i }} className="text-center">
+                  <div className="mx-auto w-12 h-12 flex items-center justify-center text-white mb-2 bg-white/10 rounded-lg shadow-md">
+                    {benefit.icon}
+                  </div>
                   <div className="text-white text-sm font-semibold">{benefit.title}</div>
-                </div>
+                  <p className="text-white/80 text-xs mt-1">{benefit.text}</p>
+                </motion.div>
               ))}
             </div>
           </motion.div>
@@ -331,7 +336,7 @@ const LandingPage = () => {
       </section> */}
 
       {/* Footer */}
-  <footer className="px-6 py-12 border-t border-white/10">
+  <footer className="absolute bottom-0 left-0 right-0 z-50 px-6 py-6 border-t border-white/10 bg-transparent">
         <div className="max-w-7xl mx-auto text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
@@ -344,7 +349,7 @@ const LandingPage = () => {
           </p>
         </div>
       </footer>
-  <DevRoleSwitcher />
+  {/* DevRoleSwitcher removed */}
     </div>
   );
 };

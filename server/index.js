@@ -88,6 +88,7 @@ app.use('/api/appointments', require('./routes/appointments'));
 app.use('/api/doctor', require('./routes/doctor'));
 app.use('/api/upload', require('./routes/upload'));
 app.use('/api/contact', require('./routes/contact'));
+app.use('/api/admin', require('./routes/admin'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

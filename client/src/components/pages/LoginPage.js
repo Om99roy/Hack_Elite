@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Eye, EyeOff, Smartphone, Mail, Lock, Send } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { Camera } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { authAPI } from '../../services/api';
 import toast from 'react-hot-toast';
@@ -9,7 +10,7 @@ import toast from 'react-hot-toast';
 const LoginPage = () => {
   // navigation is handled in AuthContext after login; OTP flow reloads the page
   const { login } = useAuth();
-  const [loginMethod, setLoginMethod] = useState('email'); // email, biometric, otp
+  const [loginMethod, setLoginMethod] = useState('email'); // email, face
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -18,8 +19,7 @@ const LoginPage = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpLoading, setOtpLoading] = useState(false);
+  const [cameraOpen, setCameraOpen] = useState(false);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -59,53 +59,26 @@ const LoginPage = () => {
   //   }
   // };
 
-  const handleSendOTP = async () => {
-    if (!formData.phone) {
-      toast.error('Please enter your phone number first');
-      return;
-    }
-
-    setOtpLoading(true);
+  // Face verification placeholder: opens webcam preview; integration (OpenCV) will be added later
+  const startCamera = async () => {
     try {
-      console.log('Sending OTP to phone:', formData.phone);
-      // Call the backend API to send OTP
-      await authAPI.sendOTP(formData.phone);
-      setOtpSent(true);
-      toast.success('OTP sent successfully!');
-    } catch (error) {
-      console.error('Send OTP error:', error);
-      console.error('Error response:', error.response);
-      const message = error.response?.data?.message || 'Failed to send OTP. Please try again.';
-      toast.error(message);
-    } finally {
-      setOtpLoading(false);
+      setCameraOpen(true);
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const video = document.querySelector('#face-video');
+      if (video) video.srcObject = stream;
+    } catch (err) {
+      console.error('Camera error:', err);
+      toast.error('Could not open the camera. Please allow camera access.');
     }
   };
 
-  const handleOTPLogin = async (e) => {
-    e.preventDefault();
-    if (!otpSent) {
-      toast.error('Please send OTP first');
-      return;
-    }
-    
-    setLoading(true);
-    try {
-      // Call the backend API to verify OTP
-      const response = await authAPI.verifyOTP(formData.phone, formData.otp);
-      const { token } = response.data;
-      
-      // Store token and navigate
-  localStorage.setItem('token', token);
-  toast.success('OTP verification successful!');
-  // Reload so AuthProvider picks up the token and user profile
-  window.location.reload();
-    } catch (error) {
-      console.error('OTP verification error:', error);
-      const message = error.response?.data?.message || 'OTP verification failed';
-      toast.error(message);
-    } finally {
-      setLoading(false);
+  const stopCamera = () => {
+    setCameraOpen(false);
+    const video = document.querySelector('#face-video');
+    if (video && video.srcObject) {
+      const tracks = video.srcObject.getTracks();
+      tracks.forEach((t) => t.stop());
+      video.srcObject = null;
     }
   };
 
@@ -156,15 +129,15 @@ const LoginPage = () => {
               Biometric */}
             {/* </button> */}
             <button
-              onClick={() => setLoginMethod('otp')}
+              onClick={() => setLoginMethod('face')}
               className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all ${
-                  loginMethod === 'otp'
-                    ? 'bg-white text-brand-600'
+                  loginMethod === 'face'
+                    ? 'bg-white text-sky-700'
                     : 'text-white hover:bg-white/10'
                 }`}
             >
-              <Smartphone className="w-4 h-4 inline mr-2" />
-              OTP
+              <Camera className="w-4 h-4 inline mr-2" />
+              Face
             </button>
           </div>
 
@@ -222,11 +195,36 @@ const LoginPage = () => {
               <button
                 type="submit"
                   disabled={loading}
-                  className="w-full glass-button py-3 font-semibold disabled:opacity-50"
+                  className="w-full glass-cta py-3 font-semibold disabled:opacity-50"
               >
                 {loading ? 'Signing In...' : 'Sign In'}
               </button>
             </motion.form>
+          )}
+
+          {/* Face verification tab */}
+          {loginMethod === 'face' && (
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-4 text-center">
+              <p className="text-sky-700">Use face verification to sign in. (Camera only UI for now.)</p>
+              <div className="camera-frame mx-auto">
+                <video id="face-video" autoPlay muted playsInline className="w-full h-full object-cover" />
+              </div>
+
+              {!cameraOpen ? (
+                <div className="flex gap-3 justify-center">
+                  <button onClick={startCamera} className="glass-button px-6 py-3">Open Camera</button>
+                  <Link to="/login" className="text-sm text-sky-600 self-center">Help</Link>
+                </div>
+              ) : (
+                <div className="flex gap-3 justify-center">
+                  <button onClick={() => {
+                    // placeholder: do face-capture and send to backend later
+                    toast.success('Face captured (placeholder). You can now be logged in via dev flows.');
+                  }} className="glass-button px-6 py-3">Capture & Verify</button>
+                  <button onClick={stopCamera} className="px-6 py-3 border rounded-lg text-sky-700">Close Camera</button>
+                </div>
+              )}
+            </motion.div>
           )}
 
           {/* Biometric Login */}
@@ -258,88 +256,7 @@ const LoginPage = () => {
           )} */}
 
           {/* OTP Login */}
-          {loginMethod === 'otp' && (
-            <motion.form
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              onSubmit={handleOTPLogin}
-              className="space-y-4"
-            >
-              <div>
-                <label className="block text-white text-sm font-medium mb-2">
-                  Phone Number
-                </label>
-                <div className="relative">
-                  <Smartphone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-blue-300 w-5 h-5" />
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-white/50"
-                    placeholder="Enter your phone number"
-                    required
-                    disabled={otpSent}
-                  />
-                </div>
-              </div>
-
-              {!otpSent ? (
-                <button
-                  type="button"
-                  onClick={handleSendOTP}
-                  disabled={otpLoading || !formData.phone}
-                  className="w-full glass-button py-3 font-semibold disabled:opacity-50 flex items-center justify-center"
-                >
-                  {otpLoading ? (
-                    'Sending OTP...'
-                  ) : (
-                    <>
-                      <Send className="w-4 h-4 mr-2" />
-                      Send OTP
-                    </>
-                  )}
-                </button>
-              ) : (
-                <>
-                  <div>
-                    <label className="block text-white text-sm font-medium mb-2">
-                      OTP Code
-                    </label>
-                    <input
-                      type="text"
-                      name="otp"
-                      value={formData.otp}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-white/50"
-                      placeholder="Enter 6-digit OTP"
-                      maxLength="6"
-                      required
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={loading || !formData.otp || formData.otp.length !== 6}
-                    className="w-full glass-button py-3 font-semibold disabled:opacity-50"
-                  >
-                    {loading ? 'Verifying...' : 'Verify OTP'}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOtpSent(false);
-                      setFormData({ ...formData, otp: '' });
-                    }}
-                    className="w-full text-blue-200 hover:text-white text-sm py-2"
-                  >
-                    Send new OTP
-                  </button>
-                </>
-              )}
-            </motion.form>
-          )}
+          {/* OTP flow removed. Face verification tab added above. */}
         </div>
 
         {/* Sign Up Link */}

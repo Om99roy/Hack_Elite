@@ -16,6 +16,8 @@ const PatientOnboarding = () => {
     phone: '',
     password: '',
     confirmPassword: '',
+  role: 'patient',
+  imageUrl: '',
     dateOfBirth: '',
     gender: '',
     
@@ -112,6 +114,9 @@ const PatientOnboarding = () => {
         password: formData.password,
         dateOfBirth: formData.dateOfBirth,
         gender: formData.gender,
+        role: formData.role,
+        // only include imageUrl when provided (avoid sending null which fails server validation)
+        ...(formData.imageUrl ? { imageUrl: formData.imageUrl } : {}),
         emergencyContact: {
           name: formData.emergencyContactName,
           phone: formData.emergencyContactPhone,
@@ -128,9 +133,8 @@ const PatientOnboarding = () => {
       };
 
       console.log('Submitting registration data:', userData);
+      // Let AuthContext.register handle post-registration routing based on role
       await register(userData);
-      toast.success('Account created successfully!');
-      navigate('/patient/dashboard');
     } catch (error) {
       console.error('Registration error:', error);
       toast.error('Failed to create account. Please try again.');
@@ -217,6 +221,22 @@ const PatientOnboarding = () => {
                       required
                     />
                   </div>
+
+                  <div>
+                    <label className="block text-white text-sm font-medium mb-2">Role *</label>
+                    <select name="role" value={formData.role} onChange={handleInputChange} className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white">
+                      <option value="patient">Patient</option>
+                      <option value="doctor">Doctor</option>
+                      <option value="admin">Admin</option>
+                    </select>
+                  </div>
+
+                  {formData.role === 'doctor' && (
+                    <div>
+                      <label className="block text-white text-sm font-medium mb-2">Profile Image URL</label>
+                      <input type="text" name="imageUrl" value={formData.imageUrl} onChange={handleInputChange} className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white" placeholder="https://..." />
+                    </div>
+                  )}
 
                   <div>
                     <label className="block text-white text-sm font-medium mb-2">
@@ -452,7 +472,7 @@ const PatientOnboarding = () => {
             <button
               onClick={handleBack}
               disabled={currentStep === 1}
-              className="glass-button flex items-center space-x-2 disabled:opacity-50"
+              className="glass-cta flex items-center space-x-2 disabled:opacity-50"
             >
               <ArrowLeft className="w-5 h-5" />
               <span>Back</span>
@@ -460,7 +480,7 @@ const PatientOnboarding = () => {
 
             <button
               onClick={handleNext}
-              className="glass-button flex items-center space-x-2"
+              className="glass-cta flex items-center space-x-2"
             >
               <span>{currentStep === steps.length ? 'Create Account' : 'Next'}</span>
               {currentStep < steps.length && <ArrowRight className="w-5 h-5" />}

@@ -1,36 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { 
-  ArrowLeft, 
-  Users, 
-  Clock, 
-  AlertTriangle, 
-  CheckCircle,
-  Eye,
-  FileText,
-  MessageSquare,
-  Calendar,
-  TrendingUp,
-  User,
-  Phone,
-  Mail,
-  MapPin,
-  Star,
-  Activity,
-  Heart,
-  Brain,
-  Shield,
-  Zap,
-  Filter,
-  Search,
-  Plus,
-  Edit,
-  Trash2,
-  Send,
-  Download,
-  Share2
-} from 'lucide-react';
+import { ArrowLeft, Users, Calendar, TrendingUp, Filter, Search, MessageSquare, Clock, Plus, FileText, Phone, Mail, MapPin } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import toast from 'react-hot-toast';
 
@@ -41,51 +12,15 @@ const DoctorPortal = () => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Mock data
-  const patientQueue = [
-    {
-      id: 'P001',
-      name: 'John Smith',
-      age: 45,
-      priority: 'critical',
-      riskScore: 92,
-      mainFindings: 'Conjunctivitis, swelling detected',
-      timeSinceTest: '2 hours ago',
-      aiConfidence: 95,
-      image: 'https://via.placeholder.com/50x50/ef4444/ffffff?text=JS',
-      contact: '+1 (555) 123-4567',
-      email: 'john.smith@email.com',
-      location: 'New York, NY'
-    },
-    {
-      id: 'P002',
-      name: 'Maria Garcia',
-      age: 32,
-      priority: 'urgent',
-      riskScore: 78,
-      mainFindings: 'Color analysis shows potential anemia',
-      timeSinceTest: '4 hours ago',
-      aiConfidence: 88,
-      image: 'https://via.placeholder.com/50x50/f59e0b/ffffff?text=MG',
-      contact: '+1 (555) 234-5678',
-      email: 'maria.garcia@email.com',
-      location: 'Los Angeles, CA'
-    },
-    {
-      id: 'P003',
-      name: 'David Chen',
-      age: 28,
-      priority: 'moderate',
-      riskScore: 65,
-      mainFindings: 'Minor structural asymmetry detected',
-      timeSinceTest: '6 hours ago',
-      aiConfidence: 82,
-      image: 'https://via.placeholder.com/50x50/f97316/ffffff?text=DC',
-      contact: '+1 (555) 345-6789',
-      email: 'david.chen@email.com',
-      location: 'San Francisco, CA'
+  // Redirect if not a doctor (extra safeguard)
+  useEffect(() => {
+    if (!user || user.role !== 'doctor') {
+      navigate('/login');
     }
-  ];
+  }, [user, navigate]);
+
+  // No fake data: start with empty queue until real API integration populates it
+  const patientQueue = [];
 
   const todayAppointments = [
     {
@@ -115,12 +50,12 @@ const DoctorPortal = () => {
   ];
 
   const analytics = {
-    totalPatients: 156,
-    criticalCases: 8,
-    urgentCases: 23,
-    averageWaitTime: '2.3 hours',
-    aiAccuracy: '94.2%',
-    satisfactionRate: '4.8/5'
+    totalPatients: 0,
+    criticalCases: 0,
+    urgentCases: 0,
+    averageWaitTime: '-',
+    aiAccuracy: '-',
+    satisfactionRate: '-'
   };
 
   const getPriorityColor = (priority) => {
@@ -170,7 +105,16 @@ const DoctorPortal = () => {
           className="flex items-center justify-between mb-6"
         >
           <button
-            onClick={() => navigate('/patient/dashboard')}
+            onClick={() => {
+              if (user?.role === 'doctor') {
+                // if a doctor is on this page and wants to go back, send to home
+                navigate('/');
+              } else if (user?.role === 'patient') {
+                navigate('/patient/dashboard');
+              } else {
+                navigate('/');
+              }
+            }}
             className="glass-button flex items-center space-x-2"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -270,7 +214,10 @@ const DoctorPortal = () => {
                       </div>
                     </div>
 
-                    {patientQueue.map((patient, index) => (
+                    {patientQueue.length === 0 ? (
+                      <div className="p-6 text-center text-blue-200">No patients in queue yet. Once patients submit tests they will appear here.</div>
+                    ) : (
+                      patientQueue.map((patient, index) => (
                       <motion.div
                         key={patient.id}
                         initial={{ opacity: 0, x: -20 }}
@@ -303,7 +250,8 @@ const DoctorPortal = () => {
                           </div>
                         </div>
                       </motion.div>
-                    ))}
+                      ))
+                    )}
                   </motion.div>
                 )}
 
@@ -338,9 +286,7 @@ const DoctorPortal = () => {
                             <div className={`text-sm ${getPriorityColor(appointment.priority)}`}>
                               {appointment.priority}
                             </div>
-                            <div className={`text-xs ${
-                              appointment.status === 'confirmed' ? 'text-green-400' : 'text-yellow-400'
-                            }`}>
+                            <div className={`text-xs ${appointment.status === 'confirmed' ? 'text-green-400' : 'text-yellow-400'}`}>
                               {appointment.status}
                             </div>
                           </div>

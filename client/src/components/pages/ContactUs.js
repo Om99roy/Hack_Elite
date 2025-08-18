@@ -245,7 +245,7 @@ const ContactUs = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full glass-button text-lg py-4 flex items-center justify-center space-x-2 disabled:opacity-50"
+                className="w-full glass-cta text-lg py-4 flex items-center justify-center space-x-2 disabled:opacity-50"
               >
                 {loading ? (
                   <>
@@ -427,14 +427,14 @@ const ContactUs = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 to="/onboarding"
-                className="glass-button text-lg px-8 py-4 flex items-center justify-center space-x-2"
+                className="glass-cta text-lg px-8 py-4 flex items-center justify-center space-x-2"
               >
                 <span>Start Free Screening</span>
                 <CheckCircle className="w-5 h-5" />
               </Link>
               <Link 
                 to="/about"
-                className="glass-button text-lg px-8 py-4 flex items-center justify-center space-x-2"
+                className="glass-cta text-lg px-8 py-4 flex items-center justify-center space-x-2"
               >
                 <span>Learn More</span>
                 <Globe className="w-5 h-5" />

@@ -10,6 +10,9 @@ import { SocketProvider } from "./contexts/SocketContext";
 import LandingPage from "./components/pages/LandingPage";
 import PatientDashboard from "./components/pages/PatientDashboard";
 import DoctorPortal from "./components/pages/DoctorPortal";
+import AdminPanel from "./components/pages/AdminPanel";
+import NewPatient from "./components/pages/NewPatient";
+import GenerateReport from "./components/pages/GenerateReport";
 import EyeTestCamera from "./components/pages/EyeTestCamera";
 import ResultsViewer from "./components/pages/ResultsViewer";
 import AppointmentBooking from "./components/pages/AppointmentBooking";
@@ -37,7 +40,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <SocketProvider>
-          <div className="App min-h-screen bg-[linear-gradient(180deg,#ffd3ea_0%,#e54be0_45%,#6b1f80_100%)]">
+          <div className="App min-h-screen bg-[linear-gradient(180deg,#e6f0ff_0%,#d7e8ff_25%,#cfe2ff_50%,#d0e1ff_75%,#eaf4ff_100%)]">
             <Routes>
               {/* Public Routes */}
               <Route path="/" element={<LandingPage />} />
@@ -70,6 +73,30 @@ function App() {
                 element={
                   <ProtectedRoute role="doctor">
                     <DoctorPortal />
+                  </ProtectedRoute>
+                }
+              />
+                <Route
+                  path="/doctor/new-patient"
+                  element={
+                    <ProtectedRoute role="doctor">
+                      <NewPatient />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/doctor/generate-report"
+                  element={
+                    <ProtectedRoute role="doctor">
+                      <GenerateReport />
+                    </ProtectedRoute>
+                  }
+                />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute role="admin">
+                    <AdminPanel />
                   </ProtectedRoute>
                 }
               />
