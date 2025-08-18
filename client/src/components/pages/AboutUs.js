@@ -382,6 +382,22 @@ const AboutUs = () => {
           </motion.div>
         </div>
       </section>
+
+      {/* Team Gallery (Images from public/images) */}
+      <section className="px-6 py-16">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Community & Stories</h2>
++          <p className="text-brand-100 mb-8">Real people, real impact — snapshots from our community</p>
++          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
++            <img src="/images/dipa.jpg" alt="Dipa" className="w-full h-36 object-cover rounded-lg shadow-md" />
++            <img src="/images/pritha.jpg" alt="Pritha" className="w-full h-36 object-cover rounded-lg shadow-md" />
++            <img src="/images/raju.jpg" alt="Raju" className="w-full h-36 object-cover rounded-lg shadow-md" />
++            <img src="/images/rohan.jpg" alt="Rohan" className="w-full h-36 object-cover rounded-lg shadow-md" />
++            <img src="/images/srija.jpg" alt="Srija" className="w-full h-36 object-cover rounded-lg shadow-md" />
++          </div>
++        </div>
++      </section>
+*** End Patch
     </div>
   );
 };

@@ -1,82 +1,14 @@
 import React from 'react';
 import { motion } from "framer-motion";
 import { Link } from 'react-router-dom';
-import { 
-  Eye, 
-  Shield, 
-  Zap, 
-  Users, 
-  Smartphone, 
-  Award,
-  ArrowRight,
-  Play,
-  Star,
-  CheckCircle,
-  Camera,
-  Brain,
-  Heart,
-  Menu,
-  X
-} from 'lucide-react';
-
+import { ArrowRight, CheckCircle, Camera, Brain, Heart, Menu, X } from 'lucide-react';
 import { TbHealthRecognition } from "react-icons/tb";
+import DevRoleSwitcher from '../ui/DevRoleSwitcher';
 
 const LandingPage = () => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
-  const features = [
-    {
-      icon: <Eye className="w-8 h-8" />,
-      title: "AI-Powered Analysis",
-      description: "Advanced machine learning algorithms analyze eye images for early detection of conditions"
-    },
-    {
-      icon: <Shield className="w-8 h-8" />,
-      title: "Secure & Private",
-      description: "HIPAA-compliant platform with end-to-end encryption and biometric authentication"
-    },
-    {
-      icon: <Zap className="w-8 h-8" />,
-      title: "Instant Results",
-      description: "Get comprehensive eye health reports within minutes, not days"
-    },
-    {
-      icon: <Users className="w-8 h-8" />,
-      title: "Expert Care",
-      description: "Connect with certified ophthalmologists and optometrists remotely"
-    },
-    {
-      icon: <Smartphone className="w-8 h-8" />,
-      title: "Mobile First",
-      description: "Take eye tests anywhere using just your smartphone camera"
-    },
-    {
-      icon: <Award className="w-8 h-8" />,
-      title: "Proven Accuracy",
-      description: "95%+ accuracy rate validated by leading medical institutions"
-    }
-  ];
 
-  const testimonials = [
-    {
-      name: "Dr. Sarah Johnson",
-      role: "Ophthalmologist",
-      content: "This platform has revolutionized how we screen patients. The AI accuracy is remarkable.",
-      rating: 5
-    },
-    {
-      name: "Michael Chen",
-      role: "Patient",
-      content: "Easy to use and gives me peace of mind. The results are detailed and easy to understand.",
-      rating: 5
-    },
-    {
-      name: "Dr. Emily Rodriguez",
-      role: "Optometrist",
-      content: "The triage system is excellent. It helps me prioritize patients who need immediate attention.",
-      rating: 5
-    }
-  ];
 
   const benefits = [
     {
@@ -107,7 +39,7 @@ const LandingPage = () => {
       <nav className="relative z-50 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
+            <Link to="/" className="flex items-center space-x-2">
             <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
               <TbHealthRecognition  className="w-6 h-6 text-brand-500" />
             </div>
@@ -115,17 +47,13 @@ const LandingPage = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-white hover:text-brand-200 transition-colors">Home</Link>
-            <Link to="/about" className="text-white hover:text-brand-200 transition-colors">About Us</Link>
-            <Link to="/contact" className="text-white hover:text-brand-200 transition-colors">Contact</Link>
-            <Link to="/login" className="text-white hover:text-brand-200 transition-colors">Login</Link>
-            <Link 
-              to="/onboarding" 
-              className="glass-button px-6 py-2 text-white hover:scale-105 transition-transform"
-            >
-              Get Started
-            </Link>
+            <div className="hidden md:flex items-center space-x-4">
+            <Link to="/" className="glass-nav">Home</Link>
+            <Link to="/about" className="glass-nav">About Us</Link>
+            <Link to="/contact" className="glass-nav">Contact</Link>
+            <Link to="/login" className="glass-nav">Login</Link>
+            <Link to="/doctor/portal" className="glass-nav">Doctor Portal</Link>
+            <Link to="/onboarding" className="glass-button glass-button--float">Get Started</Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -213,21 +141,18 @@ const LandingPage = () => {
             </p>
 
             <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to="/onboarding" className="inline-flex items-center gap-3 bg-gradient-to-r from-brand-500 to-accent-500 text-white px-6 py-3 rounded-lg shadow-lg hover:scale-[1.02] transition-transform">
+              <Link to="/onboarding" className="inline-flex items-center gap-3 bg-gradient-to-r from-brand-500 to-accent-500 text-white px-6 py-3 rounded-lg shadow-lg hover:scale-[1.02] transition-transform glass-button--float">
                 <span className="font-semibold">Start Free Screening</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
-              <button className="inline-flex items-center gap-3 border border-white/10 text-white px-5 py-3 rounded-lg hover:bg-white/5 transition-colors">
-                <Play className="w-4 h-4" />
-                <span>Watch Demo</span>
-              </button>
+              {/* Watch Demo removed per request */}
             </div>
 
             {/* benefits small */}
             <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-6">
               {benefits.map((benefit, i) => (
                 <div key={i} className="text-center">
-                  <div className="mx-auto w-10 h-10 flex items-center justify-center text-brand-300 mb-2">{benefit.icon}</div>
+                  <div className="mx-auto w-10 h-10 flex items-center justify-center text-white/90 mb-2">{benefit.icon}</div>
                   <div className="text-white text-sm font-semibold">{benefit.title}</div>
                 </div>
               ))}
@@ -419,6 +344,7 @@ const LandingPage = () => {
           </p>
         </div>
       </footer>
+  <DevRoleSwitcher />
     </div>
   );
 };

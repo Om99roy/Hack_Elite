@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { patientAPI } from '../../services/api';
 import { 
   Eye, 
   Calendar, 
@@ -21,9 +22,9 @@ const PatientDashboard = () => {
   const { user, logout } = useAuth();
   const [dashboardData, setDashboardData] = useState({
     healthStatus: 'normal',
-    riskScore: 25,
-    lastTestDate: '2024-01-15',
-    nextAppointment: '2024-02-01',
+    riskScore: 0,
+    lastTestDate: null,
+    nextAppointment: null,
     recentTests: [],
     upcomingAppointments: [],
     notifications: []
@@ -37,47 +38,13 @@ const PatientDashboard = () => {
   const loadDashboardData = async () => {
     try {
       // Mock data for demo
-      const mockData = {
-        healthStatus: 'normal',
-        riskScore: 25,
-        lastTestDate: '2024-01-15',
-        nextAppointment: '2024-02-01',
-        recentTests: [
-          {
-            id: 'test_001',
-            date: '2024-01-15',
-            status: 'normal',
-            priority: 'normal',
-            confidence: 95
-          },
-          {
-            id: 'test_002',
-            date: '2024-01-01',
-            status: 'normal',
-            priority: 'normal',
-            confidence: 92
-          }
-        ],
-        upcomingAppointments: [
-          {
-            id: 'apt_001',
-            date: '2024-02-01',
-            time: '10:00 AM',
-            doctor: 'Dr. Sarah Johnson',
-            type: 'Follow-up'
-          }
-        ],
-        notifications: [
-          {
-            id: 'notif_001',
-            type: 'reminder',
-            message: 'Time for your monthly eye screening',
-            date: '2024-01-20'
-          }
-        ]
-      };
-      
-      setDashboardData(mockData);
+      // Try to fetch real dashboard data from API (fallback to demo data)
+      const res = await patientAPI.getDashboard();
+      if (res?.data) {
+        setDashboardData(res.data);
+      } else {
+        throw new Error('No dashboard data');
+      }
       setLoading(false);
     } catch (error) {
       toast.error('Failed to load dashboard data');

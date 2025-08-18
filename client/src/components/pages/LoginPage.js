@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Eye, EyeOff, Smartphone, Mail, Lock, Send } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { authAPI } from '../../services/api';
 import toast from 'react-hot-toast';
 
 const LoginPage = () => {
-  const navigate = useNavigate();
+  // navigation is handled in AuthContext after login; OTP flow reloads the page
   const { login } = useAuth();
   const [loginMethod, setLoginMethod] = useState('email'); // email, biometric, otp
   const [formData, setFormData] = useState({
@@ -96,9 +96,10 @@ const LoginPage = () => {
       const { token } = response.data;
       
       // Store token and navigate
-      localStorage.setItem('token', token);
-      toast.success('OTP verification successful!');
-      navigate('/patient/dashboard');
+  localStorage.setItem('token', token);
+  toast.success('OTP verification successful!');
+  // Reload so AuthProvider picks up the token and user profile
+  window.location.reload();
     } catch (error) {
       console.error('OTP verification error:', error);
       const message = error.response?.data?.message || 'OTP verification failed';

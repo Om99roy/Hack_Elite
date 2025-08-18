@@ -66,12 +66,27 @@ export const AuthProvider = ({ children }) => {
     const initializeAuth = async () => {
       const token = localStorage.getItem('token');
       if (token) {
+        // Dev shortcut: if a dev_user is present in localStorage, use it directly
+        if (process.env.NODE_ENV !== 'production') {
+          const devUserRaw = localStorage.getItem('dev_user');
+          if (devUserRaw) {
+            const devUser = JSON.parse(devUserRaw);
+            dispatch({
+              type: 'LOGIN_SUCCESS',
+              payload: { user: devUser, token },
+            });
+            return;
+          }
+        }
         try {
           const response = await authAPI.verify();
+          // Normalize full name coming from backend (may be _fullName)
+          const userFromServer = response.data.user || {};
+          userFromServer.fullName = userFromServer.fullName || userFromServer._fullName || userFromServer.fullname || userFromServer.email || 'User';
           dispatch({
             type: 'LOGIN_SUCCESS',
             payload: {
-              user: response.data.user,
+              user: userFromServer,
               token,
             },
           });
@@ -92,7 +107,8 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authAPI.login(credentials);
       const { user, token } = response.data;
-      
+      // Normalize fullName field (backend may return _fullName)
+      user.fullName = user.fullName || user._fullName || user.fullname || user.email || 'User';
       localStorage.setItem('token', token);
       dispatch({
         type: 'LOGIN_SUCCESS',
@@ -114,7 +130,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authAPI.biometricVerify(biometricData);
       const { user, token } = response.data;
-      
+      user.fullName = user.fullName || user._fullName || user.fullname || user.email || 'User';
       localStorage.setItem('token', token);
       dispatch({
         type: 'LOGIN_SUCCESS',
@@ -136,7 +152,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await authAPI.register(userData);
       const { user, token } = response.data;
-      
+      user.fullName = user.fullName || user._fullName || user.fullname || user.email || 'User';
       localStorage.setItem('token', token);
       dispatch({
         type: 'LOGIN_SUCCESS',

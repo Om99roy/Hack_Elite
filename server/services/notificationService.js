@@ -38,6 +38,12 @@ const sendSMS = async (phoneNumber, message) => {
 // Send OTP via SMS
 const sendOTP = async (phoneNumber, otp) => {
   const message = `Your EyeHealth AI verification code is: ${otp}. Valid for 3 minutes. Do not share this code with anyone.`;
+  // If Twilio is not configured in local/dev, skip sending and log the OTP so local testing works
+  if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN || !process.env.TWILIO_PHONE_NUMBER) {
+    console.warn('Twilio not configured - skipping SMS send. OTP for', phoneNumber, 'is', otp);
+    return { success: true, sid: 'local-dev', otp: process.env.NODE_ENV === 'production' ? undefined : otp };
+  }
+
   return await sendSMS(phoneNumber, message);
 };
 

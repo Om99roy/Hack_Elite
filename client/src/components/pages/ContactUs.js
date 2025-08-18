@@ -141,7 +141,7 @@ const ContactUs = () => {
         <div className="max-w-7xl mx-auto">
           <Link
             to="/"
-            className="inline-flex items-center space-x-2 text-white hover:text-brand-200 transition-colors mb-8"
+            className="inline-flex items-center space-x-2 glass-nav mb-8"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>Back to Home</span>

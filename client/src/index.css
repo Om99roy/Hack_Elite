@@ -52,6 +52,11 @@
 .glass-button--float {
   animation: floaty 4s ease-in-out infinite;
 }
+
+  /* small nav-style button for header links */
+  .glass-nav {
+    @apply px-3 py-1 rounded-md text-sm text-white/95 hover:text-white bg-white/5 hover:bg-white/10 transition-colors inline-flex items-center gap-2;
+  }
   
   .health-card {
     @apply bg-white rounded-xl shadow-health p-6 transition-all duration-300 hover:shadow-lg hover:scale-105;

@@ -17,10 +17,11 @@ import PatientOnboarding from "./components/pages/PatientOnboarding";
 import LoginPage from "./components/pages/LoginPage";
 import AboutUs from "./components/pages/AboutUs";
 import ContactUs from "./components/pages/ContactUs";
+import NotFound from "./components/pages/NotFound";
 
 // Components
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-import LoadingSpinner from "./components/ui/LoadingSpinner";
+// ...existing code... (loading spinner import removed intentionally)
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -72,6 +73,8 @@ function App() {
                   </ProtectedRoute>
                 }
               />
+              {/* Fallback route for unknown paths */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
             <Toaster
               position="top-right"
