@@ -13,7 +13,11 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: [
+      process.env.CLIENT_URL || "http://localhost:3000",
+      "http://192.168.0.139:3000",
+      "http://127.0.0.1:3000"
+    ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true
@@ -28,7 +32,11 @@ app.use(helmet());
 app.use(compression());
 app.use(morgan('combined'));
 app.use(cors({
-  origin: process.env.CLIENT_URL || "http://localhost:3000",
+  origin: [
+    process.env.CLIENT_URL || "http://localhost:3000",
+    "http://192.168.0.139:3000",
+    "http://127.0.0.1:3000"
+  ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true
